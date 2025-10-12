@@ -1,0 +1,50 @@
+# Authors
+
+## Core Team
+
+### Ron Lederer
+
+- **Role**: Lead Developer
+- **GitHub**: <https://github.com/ronsway>
+- **Contributions**:
+  - Project architecture and implementation
+  - Hebrew NLP processing system
+  - TypeScript/React frontend development
+  - Fastify API server development
+  - Database design and Prisma integration
+  - Version management system
+  - RTL Hebrew interface design
+
+### Dana Tchetchik
+
+- **Role**: Product Manager
+- **Contributions**:
+  - Product vision and requirements
+  - User experience design
+  - Market research and validation
+  - Feature prioritization
+  - User testing coordination
+
+## Repository
+
+**GitHub**: <https://github.com/ronsway/MakeMyDay.git>
+
+## Project Information
+
+**ParentFlow** is a Hebrew-language parent communication system that automatically parses WhatsApp/email messages from schools and converts them into structured tasks and events, saving Israeli parents valuable time.
+
+## Contributing
+
+We welcome contributions from the community! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to ParentFlow.
+
+## Recognition
+
+Special thanks to:
+
+- The Israeli parent community for feedback and real-world testing
+- Hebrew NLP research community for language processing insights
+- Open source contributors whose libraries make this project possible
+
+---
+
+Made with ❤️ for Israeli parents

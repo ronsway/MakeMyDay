@@ -1,0 +1,22 @@
+{
+    "profiles": {
+        "list": [
+            {
+                "name": "MakeMyDay Frontend",
+                "commandline": "cmd.exe /k \"cd /d C:\\Users\\ron_l\\Projects\\MakeMyDay && npm run dev\"",
+                "icon": "🎨",
+                "tabColor": "#177e89",
+                "colorScheme": "Campbell",
+                "startingDirectory": "C:\\Users\\ron_l\\Projects\\MakeMyDay"
+            },
+            {
+                "name": "MakeMyDay Backend",
+                "commandline": "cmd.exe /k \"cd /d C:\\Users\\ron_l\\Projects\\MakeMyDay && echo Backend placeholder...\"",
+                "icon": "⚙️",
+                "tabColor": "#084c61",
+                "colorScheme": "Campbell",
+                "startingDirectory": "C:\\Users\\ron_l\\Projects\\MakeMyDay"
+            }
+        ]
+    }
+}

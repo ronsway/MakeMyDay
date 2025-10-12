@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "MakeMyDay",
+    "subtitle": "Your personal productivity companion"
+  },
+  "tasks": {
+    "title": "Today's Tasks",
+    "placeholder": "Add a new task...",
+    "empty": "No tasks yet. Add one above!",
+    "empty_active": "No active tasks. Great job! 🎉",
+    "empty_completed": "No completed tasks yet. Start checking some off!",
+    "completed": "completed",
+    "active": "active"
+  },
+  "actions": {
+    "add": "Add",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "clear_completed": "Clear Completed"
+  },
+  "filters": {
+    "all": "All",
+    "active": "Active", 
+    "completed": "Completed"
+  },
+  "stats": {
+    "total": "Total",
+    "active": "Active",
+    "completed": "Done",
+    "progress": "Progress",
+    "all_done": "All tasks completed! Amazing work!",
+    "almost_there": "Almost done! Keep it up!",
+    "halfway": "You're halfway there!",
+    "great_start": "Great start! Keep going!",
+    "ready_to_start": "Ready to start your productive day!"
+  },
+  "language": {
+    "switch": "Language",
+    "english": "English",
+    "hebrew": "עברית"
+  },
+  "accessibility": {
+    "task_checkbox": "Mark task as completed",
+    "delete_task": "Delete task",
+    "edit_task": "Edit task",
+    "add_task": "Add new task",
+    "language_switcher": "Change language"
+  }
+}

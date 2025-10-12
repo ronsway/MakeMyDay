@@ -1,0 +1,463 @@
+.App {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.App-header {
+  margin-bottom: 2rem;
+}
+
+.App-header h1 {
+  font-size: 2.5rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.App-header p {
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+}
+
+.main-content {
+  display: flex;
+  justify-content: center;
+}
+
+.task-container {
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 400px;
+  border: 1px solid var(--color-border);
+}
+
+.task-container h2 {
+  color: var(--color-text-primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.task-list {
+  margin-bottom: 2rem;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: var(--color-task-background);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid var(--color-border);
+}
+
+.task:hover {
+  background: var(--color-task-background-hover);
+  border-color: var(--color-border-focus);
+}
+
+.task.completed {
+  opacity: 0.7;
+  background: var(--color-task-completed);
+}
+
+.task.completed span {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.task input[type="checkbox"] {
+  margin-right: 0.75rem;
+  transform: scale(1.2);
+  accent-color: var(--color-blue-500);
+}
+
+.task span {
+  flex: 1;
+  text-align: left;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+
+.task span:hover {
+  background: var(--color-background-alt);
+}
+
+/* Task Actions */
+.task-actions {
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.task:hover .task-actions {
+  opacity: 1;
+}
+
+.edit-button {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+  background: var(--color-teal-500);
+  color: var(--color-text-inverse);
+}
+
+/* Edit Task */
+.edit-task-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-task-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 2px solid var(--color-teal-500);
+  border-radius: 4px;
+  font-size: 1rem;
+  background: var(--color-input-background);
+  color: var(--color-text-primary);
+}
+
+.edit-task-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 126, 137, 0.2);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.save-button, .cancel-button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.save-button {
+  color: var(--color-teal-600);
+}
+
+.save-button:hover {
+  background: var(--color-teal-500);
+  color: var(--color-text-inverse);
+}
+
+.cancel-button {
+  color: var(--color-red-500);
+}
+
+.cancel-button:hover {
+  background: var(--color-red-500);
+  color: var(--color-text-inverse);
+}
+
+.add-task input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--color-input-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  background: var(--color-input-background);
+  color: var(--color-text-primary);
+}
+
+.add-task input:focus {
+  outline: none;
+  border-color: var(--color-input-border-focus);
+  box-shadow: 0 0 0 3px rgba(24, 153, 163, 0.1);
+}
+
+.add-task input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* RTL Support */
+[dir="rtl"] .App {
+  text-align: center;
+}
+
+[dir="rtl"] .task input[type="checkbox"] {
+  margin-right: 0;
+  margin-left: 0.75rem;
+}
+
+[dir="rtl"] .task span {
+  text-align: right;
+}
+
+[dir="rtl"] .add-task input {
+  text-align: right;
+}
+
+/* Language Switcher */
+.language-switcher {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  background: var(--color-surface);
+  border-radius: 8px;
+  padding: 0.25rem;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[dir="rtl"] .language-switcher {
+  right: auto;
+  left: 1rem;
+}
+
+.language-button {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: auto;
+}
+
+.language-button:hover {
+  background: var(--color-button-secondary);
+  color: var(--color-text-inverse);
+}
+
+.language-button.active {
+  background: var(--color-button-primary);
+  color: var(--color-text-inverse);
+}
+
+.language-button.active:hover {
+  background: var(--color-button-primary-hover);
+}
+
+.language-flag {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.language-text {
+  font-weight: 500;
+}
+
+/* Responsive language switcher */
+@media (max-width: 480px) {
+  .language-text {
+    display: none;
+  }
+  
+  .language-button {
+    padding: 0.5rem;
+    min-width: 2.5rem;
+    justify-content: center;
+  }
+}
+
+/* Delete button */
+.delete-button {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[dir="rtl"] .delete-button {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.delete-button:hover {
+  background: var(--color-red-500);
+  color: var(--color-text-inverse);
+}
+
+/* Empty message */
+.empty-message {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding: 2rem;
+}
+
+/* Enhanced Add Task Section */
+.add-task-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  width: 100%;
+}
+
+.add-task-input-group input {
+  flex: 1;
+}
+
+.add-task-button {
+  padding: 0.75rem 1.5rem;
+  background: var(--color-button-primary);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.add-task-button:hover:not(:disabled) {
+  background: var(--color-button-primary-hover);
+  transform: translateY(-1px);
+}
+
+.add-task-button:disabled {
+  background: var(--color-charcoal-300);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Task Filters */
+.task-filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+  background: var(--color-background-alt);
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+}
+
+.filter-button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.filter-button:hover {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.filter-button.active {
+  background: var(--color-button-primary);
+  color: var(--color-text-inverse);
+}
+
+.filter-button.active:hover {
+  background: var(--color-button-primary-hover);
+}
+
+/* Bulk Actions */
+.bulk-actions {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.clear-completed-button {
+  padding: 0.5rem 1rem;
+  background: var(--color-red-500);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-completed-button:hover {
+  background: var(--color-red-600);
+  transform: translateY(-1px);
+}
+
+/* Enhanced Task List */
+.task-list {
+  margin-bottom: 1rem;
+  min-height: 100px;
+}
+
+.empty-message p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive enhancements */
+@media (max-width: 480px) {
+  .task-container {
+    min-width: unset;
+    padding: 1.5rem;
+  }
+  
+  .add-task-input-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .add-task-button {
+    padding: 0.75rem;
+  }
+  
+  .task-filters {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .filter-button {
+    padding: 0.75rem;
+  }
+}

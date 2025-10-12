@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "הפוך את היום שלי",
+    "subtitle": "בן הלוויה האישי שלך לפרודוקטיביות"
+  },
+  "tasks": {
+    "title": "המשימות של היום",
+    "placeholder": "הוסף משימה חדשה...",
+    "empty": "אין עדיין משימות. הוסף אחת למעלה!",
+    "empty_active": "אין משימות פעילות. עבודה מעולה! 🎉",
+    "empty_completed": "אין עדיין משימות שהושלמו. התחל לסמן כמה!",
+    "completed": "הושלמה",
+    "active": "פעילה"
+  },
+  "actions": {
+    "add": "הוסף",
+    "delete": "מחק",
+    "edit": "ערוך",
+    "save": "שמור",
+    "cancel": "בטל",
+    "clear_completed": "נקה משימות שהושלמו"
+  },
+  "filters": {
+    "all": "הכל",
+    "active": "פעיל",
+    "completed": "הושלם"
+  },
+  "stats": {
+    "total": "סך הכל",
+    "active": "פעיל",
+    "completed": "בוצע",
+    "progress": "התקדמות",
+    "all_done": "כל המשימות הושלמו! עבודה מדהימה!",
+    "almost_there": "כמעט סיימת! המשך ככה!",
+    "halfway": "אתה באמצע הדרך!",
+    "great_start": "התחלה נהדרת! המשך!",
+    "ready_to_start": "מוכן להתחיל יום פרודוקטיבי!"
+  },
+  "language": {
+    "switch": "שפה",
+    "english": "English",
+    "hebrew": "עברית"
+  },
+  "accessibility": {
+    "task_checkbox": "סמן משימה כהושלמה",
+    "delete_task": "מחק משימה",
+    "edit_task": "ערוך משימה",
+    "add_task": "הוסף משימה חדשה",
+    "language_switcher": "החלף שפה"
+  }
+}

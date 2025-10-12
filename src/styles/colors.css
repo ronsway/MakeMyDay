@@ -1,0 +1,108 @@
+/* Color Palette Configuration
+ * Midnight Eagle Green + Metallic Seaweed Blue Palette
+ * Clean and simple colors without gradients
+ * 
+ * This file contains all color definitions for the MakeMyDay app.
+ * To change the color scheme, simply update the values in this file.
+ */
+
+:root {
+  /* Primary Color Palette - Midnight Eagle Green + Metallic Seaweed Blue */
+  --color-primary-teal: #177e89;      /* Metallic Seaweed Blue (main teal) */
+  --color-primary-dark-blue: #084c61; /* Midnight Eagle Green (dark blue) */
+  --color-primary-red: #db3a34;       /* Vibrant Red */
+  --color-primary-yellow: #ffc857;    /* Golden Yellow */
+  --color-primary-dark: #323031;      /* Charcoal Dark */
+
+  /* Extended Palette - Teal Variations */
+  --color-teal-100: #e8f4f5;
+  --color-teal-200: #d1e9eb;
+  --color-teal-300: #bbdee1;
+  --color-teal-400: #a4d3d7;
+  --color-teal-500: #177e89;
+  --color-teal-600: #136b75;
+  --color-teal-700: #0f5861;
+  --color-teal-800: #0b454d;
+  --color-teal-900: #073239;
+
+  /* Extended Palette - Dark Blue */
+  --color-dark-blue-100: #e6f1f4;
+  --color-dark-blue-200: #cce3e9;
+  --color-dark-blue-300: #b3d5de;
+  --color-dark-blue-400: #99c7d3;
+  --color-dark-blue-500: #084c61;
+  --color-dark-blue-600: #074156;
+  --color-dark-blue-700: #06364b;
+  --color-dark-blue-800: #052b40;
+  --color-dark-blue-900: #042035;
+
+  /* Extended Palette - Red */
+  --color-red-100: #fdeaea;
+  --color-red-200: #fbd5d4;
+  --color-red-300: #f9c0bf;
+  --color-red-400: #f7abaa;
+  --color-red-500: #db3a34;
+  --color-red-600: #c3332d;
+  --color-red-700: #ab2c26;
+  --color-red-800: #93251f;
+  --color-red-900: #7b1e18;
+
+  /* Extended Palette - Yellow */
+  --color-yellow-100: #fffbef;
+  --color-yellow-200: #fff7df;
+  --color-yellow-300: #fff3cf;
+  --color-yellow-400: #ffefbf;
+  --color-yellow-500: #ffc857;
+  --color-yellow-600: #e6b44f;
+  --color-yellow-700: #cca047;
+  --color-yellow-800: #b38c3f;
+  --color-yellow-900: #997837;
+
+  /* Extended Palette - Dark/Charcoal */
+  --color-dark-100: #f5f5f4;
+  --color-dark-200: #ebebea;
+  --color-dark-300: #e1e1df;
+  --color-dark-400: #d7d7d5;
+  --color-dark-500: #323031;
+  --color-dark-600: #2d2b2c;
+  --color-dark-700: #282627;
+  --color-dark-800: #232122;
+  --color-dark-900: #1e1c1d;
+
+  /* Semantic Colors */
+  --color-background: #ffffff;
+  --color-background-alt: var(--color-teal-100);
+  --color-surface: #ffffff;
+  --color-surface-hover: var(--color-teal-100);
+  
+  --color-text-primary: var(--color-dark-500);
+  --color-text-secondary: var(--color-dark-blue-500);
+  --color-text-muted: var(--color-dark-blue-400);
+  --color-text-inverse: #ffffff;
+  
+  --color-border: var(--color-teal-200);
+  --color-border-focus: var(--color-teal-500);
+  
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-yellow-500);
+  --color-error: var(--color-red-500);
+  --color-info: var(--color-dark-blue-500);
+
+  /* Component-specific colors */
+  --color-button-primary: var(--color-teal-500);
+  --color-button-primary-hover: var(--color-teal-600);
+  --color-button-secondary: var(--color-dark-blue-500);
+  --color-button-secondary-hover: var(--color-dark-blue-600);
+  
+  --color-task-background: var(--color-surface);
+  --color-task-background-hover: var(--color-teal-100);
+  --color-task-completed: var(--color-teal-200);
+  
+  --color-input-background: var(--color-surface);
+  --color-input-border: var(--color-border);
+  --color-input-border-focus: var(--color-border-focus);
+
+  /* Accent colors for highlights and special elements */
+  --color-accent-primary: var(--color-yellow-500);
+  --color-accent-secondary: var(--color-red-500);
+}

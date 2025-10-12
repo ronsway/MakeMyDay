@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@map("users")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  source    String   // whatsapp|email|manual
+  rawText   String   @map("raw_text")
+  parsed    String?  // JSON string
+  ts        String   // timestamp
+  hash      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  tasks     Task[]
+  
+  @@map("messages")
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  messageId String?  @map("message_id")
+  title     String
+  dueDate   String?  @map("due_date")
+  status    String   @default("open") // open|done
+  priority  String   @default("normal") // normal|high
+  category  String?
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  message   Message? @relation(fields: [messageId], references: [id])
+  
+  @@index([dueDate], map: "idx_tasks_due")
+  @@map("tasks")
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  title     String
+  startTime String   @map("start_time")
+  endTime   String?  @map("end_time")
+  location  String?
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@index([startTime], map: "idx_events_start")
+  @@map("events")
+}
+
+model AnalyticsTime {
+  id               String   @id @default(cuid())
+  period           String
+  timeSavedMinutes Int      @default(0) @map("time_saved_minutes")
+  signals          String?  // JSON string
+  createdAt        DateTime @default(now()) @map("created_at")
+  
+  @@map("analytics_time")
+}
