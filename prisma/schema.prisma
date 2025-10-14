@@ -11,12 +11,94 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?
-  createdAt DateTime @default(now()) @map("created_at")
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  name          String
+  phone         String?
+  avatar        String?
+  verified      Boolean   @default(false)
+  verifyToken   String?   @map("verify_token")
+  resetToken    String?   @map("reset_token")
+  resetExpires  DateTime? @map("reset_expires")
+  locale        String    @default("he")
+  timezone      String    @default("Asia/Jerusalem")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  lastLoginAt   DateTime? @map("last_login_at")
+  
+  // Relations
+  families      FamilyMember[]
+  tasks         Task[]
+  events        Event[]
+  notifications UserNotification[]
+  sessions      UserSession[]
   
   @@map("users")
+}
+
+model Family {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  members   FamilyMember[]
+  children  Child[]
+  
+  @@map("families")
+}
+
+model FamilyMember {
+  id        String   @id @default(cuid())
+  familyId  String   @map("family_id")
+  userId    String   @map("user_id")
+  role      String   @default("parent") // admin|parent|viewer
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  family    Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([familyId, userId])
+  @@map("family_members")
+}
+
+model Child {
+  id        String   @id @default(cuid())
+  familyId  String   @map("family_id")
+  name      String
+  grade     String?
+  school    String?
+  className String?  @map("class_name")
+  birthDate String?  @map("birth_date")
+  avatar    String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  family    Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  tasks     Task[]
+  events    Event[]
+  
+  @@map("children")
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  token        String   @unique
+  refreshToken String   @unique @map("refresh_token")
+  expiresAt    DateTime @map("expires_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  lastUsedAt   DateTime @default(now()) @map("last_used_at")
+  userAgent    String?  @map("user_agent")
+  ipAddress    String?  @map("ip_address")
+  
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([token])
+  @@index([userId])
+  @@map("user_sessions")
 }
 
 model Message {
@@ -34,39 +116,116 @@ model Message {
 }
 
 model Task {
-  id        String   @id @default(cuid())
-  messageId String?  @map("message_id")
-  title     String
-  dueDate   String?  @map("due_date")
-  status    String   @default("open") // open|done
-  priority  String   @default("normal") // normal|high
-  category  String?
-  createdAt DateTime @default(now()) @map("created_at")
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  childId     String?  @map("child_id")
+  messageId   String?  @map("message_id")
+  title       String
+  description String?
+  dueDate     String?  @map("due_date")
+  dueTime     String?  @map("due_time")
+  status      String   @default("open") // open|done|cancelled
+  priority    String   @default("normal") // normal|high|urgent
+  category    String?
+  tags        String?  // JSON array
+  recurring   String?  // JSON config for recurring tasks
+  reminderAt  DateTime? @map("reminder_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
   
-  message   Message? @relation(fields: [messageId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  child       Child?   @relation(fields: [childId], references: [id], onDelete: SetNull)
+  message     Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
   
+  @@index([userId])
   @@index([dueDate], map: "idx_tasks_due")
+  @@index([status])
   @@map("tasks")
 }
 
 model Event {
-  id        String   @id @default(cuid())
-  title     String
-  startTime String   @map("start_time")
-  endTime   String?  @map("end_time")
-  location  String?
-  createdAt DateTime @default(now()) @map("created_at")
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  childId         String?  @map("child_id")
+  title           String
+  description     String?
+  startTime       String   @map("start_time")
+  endTime         String?  @map("end_time")
+  allDay          Boolean  @default(false) @map("all_day")
+  location        String?
+  recurring       String?  // JSON config for recurring events
+  calendarEventId String?  @map("calendar_event_id") // Google Calendar ID
+  reminderAt      DateTime? @map("reminder_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
   
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  child           Child?   @relation(fields: [childId], references: [id], onDelete: SetNull)
+  
+  @@index([userId])
   @@index([startTime], map: "idx_events_start")
   @@map("events")
 }
 
+model UserNotification {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  type      String   // task_due|event_reminder|digest|update
+  title     String
+  message   String
+  data      String?  // JSON metadata
+  read      Boolean  @default(false)
+  readAt    DateTime? @map("read_at")
+  sentAt    DateTime? @map("sent_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([read])
+  @@map("user_notifications")
+}
+
+model WhatsAppConnection {
+  id          String   @id @default(cuid())
+  userId      String   @unique @map("user_id")
+  qrCode      String?  @map("qr_code")
+  sessionData String?  @map("session_data") // Encrypted session
+  status      String   @default("disconnected") // connected|disconnected|pending
+  lastSyncAt  DateTime? @map("last_sync_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  @@map("whatsapp_connections")
+}
+
+model CalendarSync {
+  id            String   @id @default(cuid())
+  userId        String   @unique @map("user_id")
+  provider      String   @default("google") // google|outlook
+  accessToken   String   @map("access_token") // Encrypted
+  refreshToken  String   @map("refresh_token") // Encrypted
+  calendarId    String   @map("calendar_id")
+  syncEnabled   Boolean  @default(true) @map("sync_enabled")
+  lastSyncAt    DateTime? @map("last_sync_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  
+  @@map("calendar_syncs")
+}
+
 model AnalyticsTime {
   id               String   @id @default(cuid())
+  userId           String?  @map("user_id")
   period           String
   timeSavedMinutes Int      @default(0) @map("time_saved_minutes")
+  tasksProcessed   Int      @default(0) @map("tasks_processed")
+  eventsProcessed  Int      @default(0) @map("events_processed")
   signals          String?  // JSON string
   createdAt        DateTime @default(now()) @map("created_at")
   
+  @@index([userId])
+  @@index([period])
   @@map("analytics_time")
 }

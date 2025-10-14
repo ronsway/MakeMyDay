@@ -160,4 +160,4 @@ This is the first production release of ParentFlow, the Hebrew parent communicat
 
 ---
 
-**Made with ❤️ for Israeli parents**
+***Made with ❤️ for Israeli parents***

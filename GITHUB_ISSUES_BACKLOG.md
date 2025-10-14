@@ -3,6 +3,7 @@
 ## Priority 1: Foundation (Week 1-2)
 
 ### Issue #1: PostgreSQL Schema + Migrations
+
 **Title**: `feat(db): postgres schema + migrations (prisma/sql)`
 **Labels**: `enhancement`, `database`, `priority:high`
 **Milestone**: MVP Week 1
@@ -11,6 +12,7 @@
 Migrate from SQLite to PostgreSQL with complete multi-user schema.
 
 **Tasks**:
+
 - [ ] Set up Supabase project
 - [ ] Design PostgreSQL schema with all tables from MVP spec
 - [ ] Create Prisma schema for PostgreSQL
@@ -22,6 +24,7 @@ Migrate from SQLite to PostgreSQL with complete multi-user schema.
 - [ ] Update connection strings in .env
 
 **Acceptance Criteria**:
+
 - All tables created with proper relationships
 - Indexes on frequently queried columns
 - FK constraints with proper cascade rules
@@ -31,6 +34,7 @@ Migrate from SQLite to PostgreSQL with complete multi-user schema.
 ---
 
 ### Issue #2: Auth & Profile Endpoints
+
 **Title**: `feat(api): auth/me, ingestion/messages, tasks, events`
 **Labels**: `enhancement`, `api`, `priority:high`
 **Milestone**: MVP Week 1-2
@@ -39,6 +43,7 @@ Migrate from SQLite to PostgreSQL with complete multi-user schema.
 Implement Supabase authentication and user profile management.
 
 **Tasks**:
+
 - [ ] Integrate Supabase Auth
 - [ ] Implement JWT middleware
 - [ ] Create role-based access control (RBAC)
@@ -49,6 +54,7 @@ Implement Supabase authentication and user profile management.
 - [ ] Add auth tests
 
 **Acceptance Criteria**:
+
 - Users can authenticate with JWT
 - Roles (parent, educator, admin) properly enforced
 - Profile updates work correctly
@@ -59,6 +65,7 @@ Implement Supabase authentication and user profile management.
 ## Priority 2: Core Services (Week 2-3)
 
 ### Issue #3: Python NLP Service
+
 **Title**: `feat/nlp-svc: FastAPI service (Hebrew intent/date) + tests`
 **Labels**: `enhancement`, `nlp`, `python`, `priority:high`
 **Milestone**: MVP Week 2
@@ -67,6 +74,7 @@ Implement Supabase authentication and user profile management.
 Create separate Python FastAPI service for Hebrew NLP processing.
 
 **Tasks**:
+
 - [ ] Set up Python FastAPI project structure
 - [ ] Port Hebrew NLP parser from TypeScript to Python
 - [ ] Enhance date resolver with more Hebrew patterns
@@ -77,6 +85,7 @@ Create separate Python FastAPI service for Hebrew NLP processing.
 - [ ] Add error handling
 
 **Acceptance Criteria**:
+
 - All POC NLP features work in Python
 - New Hebrew patterns supported
 - Tests cover edge cases
@@ -86,6 +95,7 @@ Create separate Python FastAPI service for Hebrew NLP processing.
 ---
 
 ### Issue #4: Notifications Worker Queue
+
 **Title**: `feat/notify: worker queue + FCM + quiet hours`
 **Labels**: `enhancement`, `notifications`, `priority:high`
 **Milestone**: MVP Week 3
@@ -94,6 +104,7 @@ Create separate Python FastAPI service for Hebrew NLP processing.
 Build multi-channel notification system with scheduling.
 
 **Tasks**:
+
 - [ ] Set up BullMQ job queue
 - [ ] Implement FCM push notifications
 - [ ] Add email notifications via Nodemailer
@@ -104,6 +115,7 @@ Build multi-channel notification system with scheduling.
 - [ ] Add delivery tracking
 
 **Acceptance Criteria**:
+
 - Notifications sent via FCM and email
 - Quiet hours honored (21:30-07:00)
 - Snooze works correctly
@@ -115,6 +127,7 @@ Build multi-channel notification system with scheduling.
 ## Priority 3: User Interfaces (Week 3-4)
 
 ### Issue #5: Educator Portal
+
 **Title**: `feat/edu-portal: compose message + class status + follow-ups`
 **Labels**: `enhancement`, `frontend`, `educator`, `priority:high`
 **Milestone**: MVP Week 3-4
@@ -123,6 +136,7 @@ Build multi-channel notification system with scheduling.
 Build educator web portal for class communication.
 
 **Tasks**:
+
 - [ ] Create React app with Vite + Tailwind
 - [ ] Build message composer component
 - [ ] Add class selection interface
@@ -133,6 +147,7 @@ Build educator web portal for class communication.
 - [ ] Add file attachment support
 
 **Acceptance Criteria**:
+
 - Educators can compose and send messages
 - Class selection works
 - Engagement metrics display correctly
@@ -142,6 +157,7 @@ Build educator web portal for class communication.
 ---
 
 ### Issue #6: Enhanced Parent App
+
 **Title**: `feat/parent-app: Today/Week views + task details + snooze`
 **Labels**: `enhancement`, `frontend`, `parent`, `priority:high`
 **Milestone**: MVP Week 4
@@ -150,6 +166,7 @@ Build educator web portal for class communication.
 Enhance parent interface with new views and functionality.
 
 **Tasks**:
+
 - [ ] Add "This Week" view
 - [ ] Enhance "Today" view with better UX
 - [ ] Create detailed task view with notes
@@ -160,6 +177,7 @@ Enhance parent interface with new views and functionality.
 - [ ] Implement task editing
 
 **Acceptance Criteria**:
+
 - Week view shows all upcoming tasks
 - Task details fully editable
 - Snooze presets work correctly
@@ -171,6 +189,7 @@ Enhance parent interface with new views and functionality.
 ## Priority 4: Advanced Features (Week 5-6)
 
 ### Issue #7: Emergency Broadcast System
+
 **Title**: `feat/emergency: broadcast + calendar reflow + suppression`
 **Labels**: `enhancement`, `emergency`, `priority:medium`
 **Milestone**: MVP Week 5
@@ -179,6 +198,7 @@ Enhance parent interface with new views and functionality.
 Implement emergency (Bletam) broadcast system.
 
 **Tasks**:
+
 - [ ] Create emergency broadcast API
 - [ ] Add scope selection (class/institution/region)
 - [ ] Implement calendar event cancellation
@@ -189,6 +209,7 @@ Implement emergency (Bletam) broadcast system.
 - [ ] Add rollback capability
 
 **Acceptance Criteria**:
+
 - Broadcasts reach all targeted users
 - Events cancelled correctly
 - Regular notifications suppressed during emergency
@@ -198,6 +219,7 @@ Implement emergency (Bletam) broadcast system.
 ---
 
 ### Issue #8: Analytics Endpoints
+
 **Title**: `feat/analytics: time-saved + engagement endpoints`
 **Labels**: `enhancement`, `analytics`, `priority:medium`
 **Milestone**: MVP Week 5-6
@@ -206,6 +228,7 @@ Implement emergency (Bletam) broadcast system.
 Build comprehensive analytics system.
 
 **Tasks**:
+
 - [ ] Implement time-saved calculations
 - [ ] Add engagement tracking
 - [ ] Create analytics dashboard
@@ -216,6 +239,7 @@ Build comprehensive analytics system.
 - [ ] Add trend analysis
 
 **Acceptance Criteria**:
+
 - Time saved calculated accurately
 - Engagement metrics per message
 - Dashboard displays trends
@@ -227,6 +251,7 @@ Build comprehensive analytics system.
 ## Priority 5: Infrastructure (Week 6-7)
 
 ### Issue #9: Observability & Monitoring
+
 **Title**: `chore/observability: structured logs, error handler, health endpoints`
 **Labels**: `infrastructure`, `monitoring`, `priority:medium`
 **Milestone**: MVP Week 6
@@ -235,6 +260,7 @@ Build comprehensive analytics system.
 Add production-grade observability.
 
 **Tasks**:
+
 - [ ] Implement structured logging
 - [ ] Add trace IDs to all requests
 - [ ] Create error tracking (Sentry/similar)
@@ -245,6 +271,7 @@ Add production-grade observability.
 - [ ] Implement log aggregation
 
 **Acceptance Criteria**:
+
 - All logs structured JSON
 - Trace IDs track requests end-to-end
 - Health checks on all services
@@ -254,6 +281,7 @@ Add production-grade observability.
 ---
 
 ### Issue #10: CI/CD Pipelines
+
 **Title**: `ci: GitHub Actions build/test/deploy pipelines`
 **Labels**: `infrastructure`, `ci/cd`, `priority:high`
 **Milestone**: MVP Week 6-7
@@ -262,6 +290,7 @@ Add production-grade observability.
 Set up complete CI/CD automation.
 
 **Tasks**:
+
 - [ ] Create GitHub Actions workflows
 - [ ] Add build pipeline
 - [ ] Add test pipeline
@@ -273,6 +302,7 @@ Set up complete CI/CD automation.
 - [ ] Create rollback procedures
 
 **Acceptance Criteria**:
+
 - PRs trigger build + test
 - Merge to dev deploys to staging
 - Tags deploy to production
@@ -284,6 +314,7 @@ Set up complete CI/CD automation.
 ## Additional Backlog Items
 
 ### Issue #11: File Upload/Download
+
 **Title**: `feat(api): file upload/download with signed URLs`
 **Labels**: `enhancement`, `api`, `storage`
 
@@ -291,6 +322,7 @@ Set up complete CI/CD automation.
 Implement S3-compatible file storage.
 
 **Tasks**:
+
 - [ ] Set up S3-compatible storage
 - [ ] Create signed upload URLs
 - [ ] Create signed download URLs
@@ -302,6 +334,7 @@ Implement S3-compatible file storage.
 ---
 
 ### Issue #12: Rate Limiting
+
 **Title**: `feat(api): rate limiting and abuse prevention`
 **Labels**: `enhancement`, `security`, `api`
 
@@ -309,6 +342,7 @@ Implement S3-compatible file storage.
 Add rate limiting to prevent abuse.
 
 **Tasks**:
+
 - [ ] Implement IP-based rate limiting
 - [ ] Add per-user rate limits
 - [ ] Create educator endpoint limits
@@ -319,6 +353,7 @@ Add rate limiting to prevent abuse.
 ---
 
 ### Issue #13: E2E Testing
+
 **Title**: `test: E2E tests for critical user flows`
 **Labels**: `testing`, `priority:medium`
 
@@ -326,6 +361,7 @@ Add rate limiting to prevent abuse.
 Create comprehensive E2E test suite.
 
 **Tasks**:
+
 - [ ] Set up Playwright/Cypress
 - [ ] Test parent onboarding flow
 - [ ] Test educator message flow
