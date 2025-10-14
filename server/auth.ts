@@ -61,7 +61,7 @@ export async function registerUser(input: RegisterInput) {
   const validated = RegisterSchema.parse(input);
   
   // Check if user already exists
-  const existingUser = await prisma.user.findUnique({
+  const existingUser = await prisma.user.findFirst({
     where: { email: validated.email.toLowerCase() },
   });
   
@@ -101,13 +101,13 @@ export async function registerUser(input: RegisterInput) {
   });
   
   // Generate tokens
-  const tokens = await generateTokens(user.id, user.email);
+  const tokens = await generateTokens(user.id, user.email!);
   
   return {
     user: {
       id: user.id,
-      email: user.email,
-      name: user.name,
+      email: user.email!,
+      name: user.name!,
       verified: user.verified,
     },
     tokens,
@@ -123,7 +123,7 @@ export async function loginUser(input: LoginInput, userAgent?: string, ipAddress
   const validated = LoginSchema.parse(input);
   
   // Find user
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: { email: validated.email.toLowerCase() },
   });
   
@@ -145,13 +145,13 @@ export async function loginUser(input: LoginInput, userAgent?: string, ipAddress
   });
   
   // Generate tokens
-  const tokens = await generateTokens(user.id, user.email, userAgent, ipAddress);
+  const tokens = await generateTokens(user.id, user.email!, userAgent, ipAddress);
   
   return {
     user: {
       id: user.id,
-      email: user.email,
-      name: user.name,
+      email: user.email!,
+      name: user.name!,
       verified: user.verified,
       avatar: user.avatar,
       locale: user.locale,
@@ -252,7 +252,7 @@ export async function refreshAccessToken(refreshToken: string): Promise<AuthToke
   // Generate new tokens
   const newTokens = await generateTokens(
     session.user.id,
-    session.user.email,
+    session.user.email!,
     session.userAgent || undefined,
     session.ipAddress || undefined
   );
@@ -298,7 +298,7 @@ export async function verifyEmail(token: string) {
     message: 'Email verified successfully',
     user: {
       id: user.id,
-      email: user.email,
+      email: user.email!,
       verified: true,
     },
   };
@@ -308,7 +308,7 @@ export async function verifyEmail(token: string) {
  * Initiate password reset
  */
 export async function forgotPassword(email: string) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: { email: email.toLowerCase() },
   });
   

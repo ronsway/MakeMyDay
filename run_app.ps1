@@ -89,55 +89,35 @@ try {
     
     Write-Host "Starting $AppName applications..." -ForegroundColor Cyan
     
-    # Check if package.json exists (frontend)
+    # Check if package.json exists
     if (Test-Path "$ProjectDir\package.json") {
-        Write-Host "Frontend detected - Starting React/Vite development server" -ForegroundColor Green
+        Write-Host "Starting ParentFlow (Frontend + Backend API)..." -ForegroundColor Green
+        Write-Host "  - Backend API: http://localhost:$BackendPort" -ForegroundColor Cyan
+        Write-Host "  - Frontend:    http://localhost:$FrontendPort" -ForegroundColor Cyan
         
-        # Start Frontend with clean title - NO background colors
-        Write-Host "Starting frontend..." -ForegroundColor Cyan
-        Start-Process cmd -ArgumentList "/k", "cd /d `"$ProjectDir`" `&`& title [FRONTEND] MakeMyDay `&`& echo Starting MakeMyDay Frontend... `&`& npm run dev"
+        # Start both frontend and backend with npm run dev (uses concurrently)
+        Start-Process cmd -ArgumentList "/k", "cd /d `"$ProjectDir`" `&`& title [ParentFlow] Frontend + API `&`& npm run dev"
         
-        Start-Sleep -Seconds 2
+        Start-Sleep -Seconds 3
     } else {
-        Write-Host "No package.json found - Frontend not available" -ForegroundColor Yellow
-    }
-    
-    # Check for backend
-    $backendExists = $false
-    
-    if (Test-Path "$ProjectDir\backend\package.json") {
-        $backendExists = $true
-        Write-Host "Backend detected in /backend folder" -ForegroundColor Green
-        Start-Process cmd -ArgumentList "/k", "cd /d `"$ProjectDir\backend`" `&`& title [BACKEND] MakeMyDay `&`& npm run dev"
-    } elseif (Test-Path "$ProjectDir\server.js") {
-        $backendExists = $true
-        Write-Host "Backend detected - server.js" -ForegroundColor Green
-        Start-Process cmd -ArgumentList "/k", "cd /d `"$ProjectDir`" `&`& title [BACKEND] MakeMyDay `&`& node server.js"
-    } elseif (Test-Path "$ProjectDir\app.js") {
-        $backendExists = $true
-        Write-Host "Backend detected - app.js" -ForegroundColor Green
-        Start-Process cmd -ArgumentList "/k", "cd /d `"$ProjectDir`" `&`& title [BACKEND] MakeMyDay `&`& node app.js"
-    } else {
-        Write-Host "No backend detected - Frontend only mode" -ForegroundColor Cyan
-        Start-Process cmd -ArgumentList "/k", "cd /d `"$ProjectDir`" `&`& title [BACKEND] MakeMyDay `&`& echo MakeMyDay Backend `&`& echo ================= `&`& echo Backend not yet implemented `&`& echo Ready for future backend integration... `&`& echo. `&`& echo Typical backend commands: `&`& echo   - npm run dev (for Node.js/Express) `&`& echo   - python app.py (for Flask/FastAPI) `&`& echo   - dotnet run (for .NET Core) `&`& echo. `&`& pause"
+        Write-Host "No package.json found - Cannot start application" -ForegroundColor Red
+        exit 1
     }
     
     Write-Host ""
     Write-Host "Startup completed!" -ForegroundColor Green
     Write-Host "==================" -ForegroundColor Cyan
-    
-    if (Test-Path "$ProjectDir\package.json") {
-        Write-Host "Frontend: http://localhost:$FrontendPort" -ForegroundColor Cyan
-    }
-    
-    if ($backendExists) {
-        Write-Host "Backend:  http://localhost:$BackendPort" -ForegroundColor Cyan
-    }
-    
+    Write-Host "Frontend: http://localhost:$FrontendPort" -ForegroundColor Cyan
+    Write-Host "Backend:  http://localhost:$BackendPort/api" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Services:" -ForegroundColor Yellow
+    Write-Host "   API Health:  http://localhost:$BackendPort/health" -ForegroundColor Gray
+    Write-Host "   API Version: http://localhost:$BackendPort/api/version" -ForegroundColor Gray
+    Write-Host "   API Ingest:  http://localhost:$BackendPort/api/ingest" -ForegroundColor Gray
     Write-Host ""
     Write-Host "Tips:" -ForegroundColor Yellow
-    Write-Host "   - Look for windows with clear prefixes: [FRONTEND] and [BACKEND]" -ForegroundColor Gray
-    Write-Host "   - Use Ctrl+C in each window to stop services" -ForegroundColor Gray
+    Write-Host "   - Both frontend and backend run in one window" -ForegroundColor Gray
+    Write-Host "   - Use Ctrl+C in the window to stop both services" -ForegroundColor Gray
     Write-Host "   - Run .\run_app.ps1 -CleanOnly to cleanup without starting" -ForegroundColor Gray
     
 } catch {
