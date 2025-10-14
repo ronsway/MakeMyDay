@@ -16,6 +16,23 @@ import {
   compareVersions,
   type ApiVersion 
 } from './version.js';
+import {
+  registerUser,
+  loginUser,
+  verifyToken,
+  refreshAccessToken,
+  logoutUser,
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+  changePassword,
+  getUserById,
+  updateUserProfile,
+  RegisterSchema,
+  LoginSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema
+} from './auth.js';
 
 const app = Fastify({ logger: true });
 const prisma = new PrismaClient();
@@ -315,6 +332,166 @@ app.get('/api/analytics', async (request, reply) => {
     app.log.error(`Analytics query error: ${error instanceof Error ? error.message : String(error)}`);
     reply.code(500);
     return { error: 'Internal server error' };
+  }
+});
+
+// ============================================
+// AUTHENTICATION ENDPOINTS
+// ============================================
+
+// Register new user
+app.post('/api/auth/register', async (request, reply) => {
+  try {
+    const result = await registerUser(request.body as any);
+    reply.code(201);
+    return result;
+  } catch (error) {
+    app.log.error(`Registration error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(400);
+    return { error: error instanceof Error ? error.message : 'Registration failed' };
+  }
+});
+
+// User login
+app.post('/api/auth/login', async (request, reply) => {
+  try {
+    const userAgent = request.headers['user-agent'];
+    const ipAddress = request.ip;
+    
+    const result = await loginUser(request.body as any, userAgent, ipAddress);
+    return result;
+  } catch (error) {
+    app.log.error(`Login error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(401);
+    return { error: error instanceof Error ? error.message : 'Login failed' };
+  }
+});
+
+// Refresh access token
+app.post('/api/auth/refresh', async (request, reply) => {
+  try {
+    const { refreshToken } = request.body as { refreshToken: string };
+    const result = await refreshAccessToken(refreshToken);
+    return result;
+  } catch (error) {
+    app.log.error(`Token refresh error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(401);
+    return { error: 'Invalid or expired refresh token' };
+  }
+});
+
+// Logout user
+app.post('/api/auth/logout', async (request, reply) => {
+  try {
+    const token = request.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      reply.code(401);
+      return { error: 'No token provided' };
+    }
+    
+    await logoutUser(token);
+    return { message: 'Logged out successfully' };
+  } catch (error) {
+    app.log.error(`Logout error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(500);
+    return { error: 'Logout failed' };
+  }
+});
+
+// Get current user profile
+app.get('/api/auth/me', async (request, reply) => {
+  try {
+    const token = request.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      reply.code(401);
+      return { error: 'No token provided' };
+    }
+    
+    const decoded = await verifyToken(token);
+    const user = await getUserById(decoded.userId);
+    return user;
+  } catch (error) {
+    app.log.error(`Get user error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(401);
+    return { error: 'Unauthorized' };
+  }
+});
+
+// Update user profile
+app.put('/api/auth/profile', async (request, reply) => {
+  try {
+    const token = request.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      reply.code(401);
+      return { error: 'No token provided' };
+    }
+    
+    const decoded = await verifyToken(token);
+    const user = await updateUserProfile(decoded.userId, request.body as any);
+    return user;
+  } catch (error) {
+    app.log.error(`Update profile error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(400);
+    return { error: error instanceof Error ? error.message : 'Update failed' };
+  }
+});
+
+// Verify email
+app.post('/api/auth/verify-email', async (request, reply) => {
+  try {
+    const { token } = request.body as { token: string };
+    const result = await verifyEmail(token);
+    return result;
+  } catch (error) {
+    app.log.error(`Email verification error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(400);
+    return { error: error instanceof Error ? error.message : 'Verification failed' };
+  }
+});
+
+// Forgot password
+app.post('/api/auth/forgot-password', async (request, reply) => {
+  try {
+    const { email } = request.body as { email: string };
+    const result = await forgotPassword(email);
+    return result;
+  } catch (error) {
+    app.log.error(`Forgot password error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(500);
+    return { error: 'Request failed' };
+  }
+});
+
+// Reset password
+app.post('/api/auth/reset-password', async (request, reply) => {
+  try {
+    const { token, password } = request.body as { token: string; password: string };
+    const result = await resetPassword(token, password);
+    return result;
+  } catch (error) {
+    app.log.error(`Password reset error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(400);
+    return { error: error instanceof Error ? error.message : 'Reset failed' };
+  }
+});
+
+// Change password (authenticated)
+app.post('/api/auth/change-password', async (request, reply) => {
+  try {
+    const token = request.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      reply.code(401);
+      return { error: 'No token provided' };
+    }
+    
+    const decoded = await verifyToken(token);
+    const { currentPassword, newPassword } = request.body as { currentPassword: string; newPassword: string };
+    const result = await changePassword(decoded.userId, currentPassword, newPassword);
+    return result;
+  } catch (error) {
+    app.log.error(`Change password error: ${error instanceof Error ? error.message : String(error)}`);
+    reply.code(400);
+    return { error: error instanceof Error ? error.message : 'Password change failed' };
   }
 });
 
