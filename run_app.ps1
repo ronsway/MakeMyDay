@@ -16,6 +16,8 @@ $ProjectDir = $PSScriptRoot
 $FrontendPort = 5173
 $BackendPort = 3001
 
+
+
 Write-Host "MakeMyDay Application Startup" -ForegroundColor Cyan
 Write-Host "=============================" -ForegroundColor Cyan
 
