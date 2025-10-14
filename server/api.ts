@@ -506,8 +506,11 @@ function calculateTimeSaved(tasksCount: number, eventsCount: number): number {
 }
 
 async function createTask(entity: any, messageId: string) {
+  // TODO: Get userId from authenticated request once auth is integrated
+  // For now, we'll need to create a default/system user or make userId optional
   return await prisma.task.create({
     data: {
+      userId: 'system', // Temporary: will be replaced with actual user ID
       title: entity.entities.item || 'משימה חדשה',
       category: entity.entities.category || 'other',
       priority: entity.entities.priority || 'normal',
@@ -523,8 +526,10 @@ async function createEvent(entity: any, messageId: string) {
     ? `${entity.entities.date}T${entity.entities.time || '09:00'}:00`
     : new Date().toISOString();
 
+  // TODO: Get userId from authenticated request once auth is integrated
   return await prisma.event.create({
     data: {
+      userId: 'system', // Temporary: will be replaced with actual user ID
       title: entity.entities.context || 'אירוע חדש',
       startTime,
       location: entity.entities.location || null
