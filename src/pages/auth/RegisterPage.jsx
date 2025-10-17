@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, Phone, Eye, EyeOff, UserPlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 export default function RegisterPage() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,23 +33,23 @@ export default function RegisterPage() {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'שם מלא הוא שדה חובה';
+      newErrors.name = t('auth.validation.nameRequired');
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'אימייל הוא שדה חובה';
+      newErrors.email = t('auth.validation.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'אימייל לא תקין';
+      newErrors.email = t('auth.validation.emailInvalid');
     }
 
     if (!formData.password) {
-      newErrors.password = 'סיסמה היא שדה חובה';
+      newErrors.password = t('auth.validation.passwordRequired');
     } else if (formData.password.length < 8) {
-      newErrors.password = 'סיסמה חייבת להכיל לפחות 8 תווים';
+      newErrors.password = t('auth.validation.passwordTooShort');
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'הסיסמאות אינן תואמות';
+      newErrors.confirmPassword = t('auth.validation.passwordsNotMatch');
     }
 
     setErrors(newErrors);
@@ -79,15 +82,20 @@ export default function RegisterPage() {
     if (/[0-9]/.test(password)) strength++;
     if (/[^a-zA-Z0-9]/.test(password)) strength++;
 
-    if (strength <= 2) return { text: 'חלשה', color: 'bg-coral-500', width: '33%' };
-    if (strength <= 3) return { text: 'בינונית', color: 'bg-orange-500', width: '66%' };
-    return { text: 'חזקה', color: 'bg-turquoise-500', width: '100%' };
+    if (strength <= 2) return { text: t('auth.passwordStrength.weak'), color: 'bg-coral-500', width: '33%' };
+    if (strength <= 3) return { text: t('auth.passwordStrength.medium'), color: 'bg-orange-500', width: '66%' };
+    return { text: t('auth.passwordStrength.strong'), color: 'bg-turquoise-500', width: '100%' };
   };
 
   const passwordStrength = getPasswordStrength();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-500 via-orange-500 to-teal-500 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-coral-500 flex items-center justify-center p-4">
+      {/* Language Switcher */}
+      <div className="absolute top-6 right-6 z-10">
+        <LanguageSwitcher />
+      </div>
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -101,12 +109,12 @@ export default function RegisterPage() {
             transition={{ delay: 0.2 }}
             className="inline-block"
           >
-            <div className="w-16 h-16 bg-gradient-to-br from-coral-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-coral-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-3xl">🎉</span>
             </div>
           </motion.div>
-          <h1 className="text-3xl font-bold text-navy-600 mb-2">הצטרף אלינו</h1>
-          <p className="text-silver-600">צור חשבון חדש ב-ParentFlow</p>
+          <h1 className="text-3xl font-bold text-navy-600 mb-2">{t('auth.joinUs')}</h1>
+          <p className="text-silver-600">{t('auth.registerSubtitle')}</p>
         </div>
 
         {/* Form */}
@@ -114,7 +122,7 @@ export default function RegisterPage() {
           {/* Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-charcoal-600 mb-2">
-              שם מלא
+              {t('auth.fullName')}
             </label>
             <div className="relative">
               <input
@@ -123,10 +131,10 @@ export default function RegisterPage() {
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 pr-12 border-2 rounded-lg focus:outline-none transition-colors ${
+                className={`w-full pl-12 pr-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                   errors.name ? 'border-coral-500' : 'border-silver-300 focus:border-teal-500'
                 }`}
-                placeholder="הכנס שם מלא"
+                placeholder={t('auth.fullNamePlaceholder')}
                 required
               />
               <User className="absolute left-4 top-1/2 -translate-y-1/2 text-silver-400 w-5 h-5" />
@@ -137,7 +145,7 @@ export default function RegisterPage() {
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-charcoal-600 mb-2">
-              אימייל
+              {t('auth.email')}
             </label>
             <div className="relative">
               <input
@@ -146,10 +154,10 @@ export default function RegisterPage() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 pr-12 border-2 rounded-lg focus:outline-none transition-colors ${
+                className={`w-full pl-12 pr-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                   errors.email ? 'border-coral-500' : 'border-silver-300 focus:border-teal-500'
                 }`}
-                placeholder="email@example.com"
+                placeholder={t('auth.emailPlaceholder')}
                 required
                 dir="ltr"
               />
@@ -161,7 +169,7 @@ export default function RegisterPage() {
           {/* Phone (Optional) */}
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-charcoal-600 mb-2">
-              טלפון <span className="text-silver-400">(אופציונלי)</span>
+              {t('auth.phone')} <span className="text-silver-400">({t('auth.optional')})</span>
             </label>
             <div className="relative">
               <input
@@ -170,8 +178,8 @@ export default function RegisterPage() {
                 type="tel"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-4 py-3 pr-12 border-2 border-silver-300 rounded-lg focus:outline-none focus:border-teal-500 transition-colors"
-                placeholder="050-1234567"
+                className="w-full pl-12 pr-4 py-3 border-2 border-silver-300 rounded-lg focus:outline-none focus:border-teal-500 transition-colors"
+                placeholder={t('auth.phonePlaceholder')}
                 dir="ltr"
               />
               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-silver-400 w-5 h-5" />
@@ -181,7 +189,7 @@ export default function RegisterPage() {
           {/* Password */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-charcoal-600 mb-2">
-              סיסמה
+              {t('auth.password')}
             </label>
             <div className="relative">
               <input
@@ -190,10 +198,10 @@ export default function RegisterPage() {
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 pr-12 border-2 rounded-lg focus:outline-none transition-colors ${
+                className={`w-full pl-12 pr-12 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                   errors.password ? 'border-coral-500' : 'border-silver-300 focus:border-teal-500'
                 }`}
-                placeholder="לפחות 8 תווים"
+                placeholder={t('auth.passwordRegisterPlaceholder')}
                 required
                 dir="ltr"
               />
@@ -225,7 +233,7 @@ export default function RegisterPage() {
           {/* Confirm Password */}
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-charcoal-600 mb-2">
-              אימות סיסמה
+              {t('auth.confirmPassword')}
             </label>
             <div className="relative">
               <input
@@ -234,10 +242,10 @@ export default function RegisterPage() {
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 pr-12 border-2 rounded-lg focus:outline-none transition-colors ${
+                className={`w-full pl-12 pr-12 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                   errors.confirmPassword ? 'border-coral-500' : 'border-silver-300 focus:border-teal-500'
                 }`}
-                placeholder="הכנס סיסמה שוב"
+                placeholder={t('auth.confirmPasswordPlaceholder')}
                 required
                 dir="ltr"
               />
@@ -259,14 +267,14 @@ export default function RegisterPage() {
             disabled={loading}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full bg-gradient-to-r from-coral-500 to-orange-500 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-coral-500 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl hover:bg-coral-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
               <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 <UserPlus className="w-5 h-5" />
-                <span>הירשם</span>
+                <span>{t('auth.registerButton')}</span>
               </>
             )}
           </motion.button>
@@ -275,9 +283,9 @@ export default function RegisterPage() {
         {/* Login Link */}
         <div className="mt-6 text-center">
           <p className="text-sm text-charcoal-600">
-            כבר יש לך חשבון?{' '}
+            {t('auth.alreadyHaveAccount')}{' '}
             <Link to="/login" className="text-teal-500 hover:text-teal-600 font-semibold transition-colors">
-              התחבר
+              {t('auth.loginButton')}
             </Link>
           </p>
         </div>

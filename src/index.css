@@ -1,109 +1,252 @@
-@import './styles/colors.css';
+/* Tailwind CSS v4 */
+@import "tailwindcss";
 
-/* Tailwind CSS */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  /* Custom Colors */
+  --color-teal-50: #E6F7F8;
+  --color-teal-100: #B3E5E8;
+  --color-teal-200: #80D3D8;
+  --color-teal-300: #4DC1C8;
+  --color-teal-400: #1AAFB8;
+  --color-teal-500: #177E89;
+  --color-teal-600: #126A73;
+  --color-teal-700: #0D565D;
+  --color-teal-800: #084247;
+  --color-teal-900: #032E31;
+
+  --color-coral-50: #FDEEE9;
+  --color-coral-100: #FACEC2;
+  --color-coral-200: #F7AE9B;
+  --color-coral-300: #F48E74;
+  --color-coral-400: #F16E4D;
+  --color-coral-500: #E76F51;
+  --color-coral-600: #D45A3D;
+  --color-coral-700: #B14832;
+  --color-coral-800: #8E3627;
+  --color-coral-900: #6B241C;
+
+  --color-navy-50: #E7ECEE;
+  --color-navy-100: #B8C8CC;
+  --color-navy-200: #89A4AA;
+  --color-navy-300: #5A8088;
+  --color-navy-400: #2B5C66;
+  --color-navy-500: #1A535C;
+  --color-navy-600: #15454C;
+  --color-navy-700: #10373C;
+  --color-navy-800: #0B292C;
+  --color-navy-900: #061B1C;
+
+  --color-turquoise-50: #E9F9F8;
+  --color-turquoise-100: #C0EEEC;
+  --color-turquoise-200: #97E3E0;
+  --color-turquoise-300: #6ED8D4;
+  --color-turquoise-400: #45CDC8;
+  --color-turquoise-500: #4ECDC4;
+  --color-turquoise-600: #3EB6AE;
+  --color-turquoise-700: #329991;
+  --color-turquoise-800: #267C74;
+  --color-turquoise-900: #1A5F57;
+
+  --color-orange-50: #FEF3E9;
+  --color-orange-100: #FCDEC1;
+  --color-orange-200: #FAC999;
+  --color-orange-300: #F8B471;
+  --color-orange-400: #F6A049;
+  --color-orange-500: #F4A261;
+  --color-orange-600: #E68B45;
+  --color-orange-700: #C77438;
+  --color-orange-800: #A85D2B;
+  --color-orange-900: #89461E;
+
+  --color-charcoal-50: #E9EAEC;
+  --color-charcoal-100: #C1C3C7;
+  --color-charcoal-200: #999CA2;
+  --color-charcoal-300: #71757D;
+  --color-charcoal-400: #494E58;
+  --color-charcoal-500: #2D3142;
+  --color-charcoal-600: #252836;
+  --color-charcoal-700: #1D1F2A;
+  --color-charcoal-800: #15161E;
+  --color-charcoal-900: #0D0D12;
+
+  --color-silver-50: #F8F8F8;
+  --color-silver-100: #E8E8E8;
+  --color-silver-200: #D8D8D8;
+  --color-silver-300: #C8C8C8;
+  --color-silver-400: #C0C0C0;
+  --color-silver-500: #BFC0C0;
+  --color-silver-600: #A0A0A0;
+  --color-silver-700: #808080;
+  --color-silver-800: #606060;
+  --color-silver-900: #404040;
+
+  --color-cream-50: #FEFBF7;
+  --color-cream-100: #FDF6ED;
+  --color-cream-200: #FAF0E4;
+  --color-cream-300: #F6EADB;
+  --color-cream-400: #F3E4D2;
+  --color-cream-500: #F0DEC9;
+  --color-cream-600: #D4C4A8;
+  --color-cream-700: #B8AA87;
+  --color-cream-800: #9C9066;
+  --color-cream-900: #807645;
+}
+
+/* Additional Theme Configuration */
+:root {
+  /* Font Families */
+  --font-family-sans: 'Rubik', 'Heebo', 'Assistant', 'Inter', 'Roboto', sans-serif;
+  --font-family-hebrew: 'Rubik', 'Heebo', 'Assistant', sans-serif;
+  --font-family-english: 'Inter', 'Roboto', sans-serif;
+
+  /* Container Max Widths */
+  --container-sm: 24rem;    /* 384px */
+  --container-md: 28rem;    /* 448px */
+  --container-lg: 32rem;    /* 512px */
+  --container-xl: 36rem;    /* 576px */
+  --container-2xl: 42rem;   /* 672px */
+  --container-3xl: 48rem;   /* 768px */
+  --container-4xl: 56rem;   /* 896px */
+  --container-5xl: 64rem;   /* 1024px */
+  --container-6xl: 72rem;   /* 1152px */
+  --container-7xl: 80rem;   /* 1280px */
+
+  /* Custom Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Animations */
+  --animate-fade-in: fadeIn 0.3s ease-in-out;
+  --animate-slide-up: slideUp 0.3s ease-out;
+  --animate-slide-down: slideDown 0.3s ease-out;
+  --animate-scale-in: scaleIn 0.2s ease-out;
+}
 
 /* Custom Base Styles */
 @layer base {
-  :root {
-    font-family: 'Rubik', 'Heebo', 'Assistant', 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    color-scheme: light dark;
-    color: var(--color-text-primary);
-    background-color: var(--color-background);
-
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
+  html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-family-sans);
+    min-height: 100vh;
+  }
+  
+  /* App root should fill the screen */
+  #root {
+    min-height: 100vh;
+  }
+
+  /* Hebrew/RTL Support */
+  body[dir="rtl"],
+  body[lang="he"] {
+    font-family: var(--font-family-hebrew);
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* Keep navigation elements LTR */
+  nav[dir="ltr"] {
+    direction: ltr;
+    text-align: left;
+  }
+
+  nav[dir="ltr"] * {
+    direction: ltr;
   }
 }
 
-/* RTL Support */
-[dir="rtl"] {
-  font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
-}
-
-html[dir="rtl"] body {
-  text-align: right;
-}
-
-/* RTL Specific adjustments */
-[dir="rtl"] .task {
-  text-align: right;
-}
-
-[dir="rtl"] .task input[type="checkbox"] {
-  margin-right: 0;
-  margin-left: 0.75rem;
-}
-
-[dir="rtl"] .task span {
-  text-align: right;
-}
-
-a {
-  font-weight: 500;
-  color: var(--color-teal-500);
-  text-decoration: inherit;
-}
-a:hover {
-  color: var(--color-teal-600);
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background: var(--color-background-alt);
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  color: var(--color-text-primary);
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--color-button-primary);
-  color: var(--color-text-inverse);
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-button:hover {
-  background-color: var(--color-button-primary-hover);
-  border-color: var(--color-border-focus);
-}
-button:focus,
-button:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: var(--color-text-primary);
-    background-color: var(--color-background);
+/* Custom Component Styles */
+@layer components {
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
-  a:hover {
-    color: var(--color-teal-700);
+
+  /* Focus styles for accessibility */
+  *:focus-visible {
+    outline: 2px solid var(--color-teal-500);
+    outline-offset: 2px;
   }
-  button {
-    background-color: var(--color-button-secondary);
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 0.5rem;
   }
-  button:hover {
-    background-color: var(--color-button-secondary-hover);
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-cream-100);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-silver-400);
+    border-radius: var(--radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-silver-500);
+  }
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }

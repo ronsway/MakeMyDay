@@ -37,13 +37,18 @@
     "version:check": "tsx scripts/version-check.ts",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx scripts/seed.ts",
+    "db:test": "node test-db-simple.js",
+    "db:browse": "node browse-db.js",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "db:push": "prisma db push",
     "test": "vitest run",
     "lint": "eslint .",
     "preview": "vite preview",
     "cron:daily": "tsx server/dailyDigest.ts",
-    "start": "run_app.bat",
-    "start:ps": "powershell -ExecutionPolicy Bypass -File ./run_app.ps1",
-    "start:clean": "powershell -ExecutionPolicy Bypass -File ./run_app.ps1 -CleanOnly"
+    "start": "run_aall.bat",
+    "start:ps": "powershell -ExecutionPolicy Bypass -File ./run_all.ps1",
+    "start:clean": "powershell -ExecutionPolicy Bypass -File ./run_all.ps1 -CleanOnly"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
@@ -70,11 +75,13 @@
     "react-hook-form": "^7.65.0",
     "react-hot-toast": "^2.6.0",
     "react-i18next": "^16.0.0",
+    "react-image-crop": "^11.0.10",
     "react-router-dom": "^7.9.4",
     "tsx": "^4.19.1",
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
     "@types/node": "^22.5.5",
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^6.4.16",

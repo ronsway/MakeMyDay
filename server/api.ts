@@ -162,7 +162,7 @@ app.post('/api/ingest', async (request, reply) => {
       reply.code(400);
       return { 
         error: 'Invalid request data',
-        details: validation.error.errors
+        details: validation.error.issues
       };
     }
 

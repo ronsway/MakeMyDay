@@ -50,10 +50,10 @@ Use the intelligent startup script for the best development experience:
 
 ```powershell
 # Windows PowerShell
-.\run_app.ps1
+.\run_all.ps1
 
 # Or use the batch file
-run_app.bat
+run_all.bat
 
 # Or use npm
 npm start
@@ -70,10 +70,10 @@ The startup script automatically:
 
 ```batch
 # Double-click to run
-run_app.bat
+run_all.bat
 
 # Or use PowerShell
-.\run_app.ps1
+.\run_all.ps1
 
 # Or use npm
 npm start

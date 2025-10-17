@@ -140,7 +140,6 @@
             margin-top: 10px;
             font-size: 11px;
             word-break: break-all;
-            display: none;
         }
 
         .user-info {
@@ -150,7 +149,6 @@
             padding: 15px;
             border-radius: 8px;
             margin-top: 15px;
-            display: none;
         }
 
         .user-info h3 {
@@ -187,6 +185,18 @@
             border-radius: 5px;
             overflow-x: auto;
             font-size: 12px;
+        }
+
+        /* Utilities */
+        .hidden { 
+            display: none; 
+        }
+
+        /* Replaces the old inline style on the <p> login hint */
+        .login-hint {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -239,9 +249,7 @@
         <!-- Get Current User -->
         <div class="form-section">
             <h2>👤 פרטי משתמש נוכחי</h2>
-            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">
-                (דורש התחברות תחילה)
-            </p>
+            <p class="login-hint">(דורש התחברות תחילה)</p>
             <button onclick="getCurrentUser()">הצג פרטי משתמש</button>
             <div id="me-response" class="response"></div>
         </div>

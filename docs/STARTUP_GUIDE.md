@@ -7,13 +7,13 @@ The easiest way to run MakeMyDay is using the smart startup script that handles 
 ### Option 1: Double-click to run (Recommended)
 
 ```batch
-run_app.bat
+run_all.bat
 ```
 
 ### Option 2: Using PowerShell directly
 
 ```powershell
-.\run_app.ps1
+.\run_all.ps1
 ```
 
 ### Option 3: Using npm
@@ -51,13 +51,13 @@ npm start
 
 ```powershell
 # Start both frontend and backend (if available)
-.\run_app.ps1
+.\run_all.ps1
 
 # Cleanup only (no startup)
-.\run_app.ps1 -CleanOnly
+.\run_all.ps1 -CleanOnly
 
 # Skip window positioning
-.\run_app.ps1 -NoPosition
+.\run_all.ps1 -NoPosition
 ```
 
 ### NPM Scripts
@@ -122,16 +122,16 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Use the `-NoPosition` flag if window positioning doesn't work:
 
 ```powershell
-.\run_app.ps1 -NoPosition
+.\run_all.ps1 -NoPosition
 ```
 
 ### Script Permissions
 
 If you can't run the script:
 
-1. Right-click `run_app.ps1` → Properties
+1. Right-click `run_all.ps1` → Properties
 2. Check "Unblock" if available
-3. Or run: `Unblock-File .\run_app.ps1`
+3. Or run: `Unblock-File .\run_all.ps1`
 
 ## Manual Startup (Alternative)
 

@@ -10,4 +10,4 @@ dist/
 Thumbs.db
 
 # Startup scripts (system-specific)
-run_app.ps1
+run_all.ps1

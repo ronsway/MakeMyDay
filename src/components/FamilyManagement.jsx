@@ -1,0 +1,308 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Plus, Edit, Trash2, Users, Camera } from 'lucide-react';
+import FamilyMemberModal from '../components/FamilyMemberModal';
+import ConfirmModal from '../components/ConfirmModal';
+import { useData } from '../contexts/DataContext';
+import toast from 'react-hot-toast';
+
+const FamilyManagement = () => {
+  const { t } = useTranslation();
+  const { children, loadAllData } = useData();
+  const [showMemberModal, setShowMemberModal] = useState(false);
+  const [editingMember, setEditingMember] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  // Mock family member operations (will be replaced with actual API calls)
+  const handleAddMember = async (memberData) => {
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Get existing members from localStorage
+      const existingMembers = JSON.parse(localStorage.getItem('parentflow_children') || '[]');
+      
+      // Prepare new member
+      const newMember = {
+        id: Date.now().toString(),
+        name: memberData.name,
+        age: memberData.age ? parseInt(memberData.age) : null,
+        grade: memberData.grade,
+        school: memberData.school,
+        className: memberData.className,
+        birthDate: memberData.birthDate,
+        avatar: memberData.avatar,
+        role: memberData.role,
+        photoUrl: memberData.photoUrl,
+        createdAt: new Date().toISOString()
+      };
+      
+      // Save to localStorage
+      const updatedMembers = [...existingMembers, newMember];
+      localStorage.setItem('parentflow_children', JSON.stringify(updatedMembers));
+      
+      // Reload data
+      await loadAllData();
+      
+      setShowMemberModal(false);
+      setEditingMember(null);
+      toast.success(t('family.addSuccess'));
+      
+    } catch (error) {
+      console.error('Failed to add family member:', error);
+      toast.error('שגיאה בהוספת בן משפחה');
+    }
+  };
+
+  const handleUpdateMember = async (memberData) => {
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Get existing members from localStorage
+      const existingMembers = JSON.parse(localStorage.getItem('parentflow_children') || '[]');
+      
+      // Update member
+      const updatedMembers = existingMembers.map(member => 
+        member.id === memberData.id 
+          ? {
+              ...member,
+              name: memberData.name,
+              age: memberData.age ? parseInt(memberData.age) : null,
+              grade: memberData.grade,
+              school: memberData.school,
+              className: memberData.className,
+              birthDate: memberData.birthDate,
+              avatar: memberData.avatar,
+              role: memberData.role,
+              photoUrl: memberData.photoUrl,
+              updatedAt: new Date().toISOString()
+            }
+          : member
+      );
+      
+      // Save to localStorage
+      localStorage.setItem('parentflow_children', JSON.stringify(updatedMembers));
+      
+      // Reload data
+      await loadAllData();
+      
+      setShowMemberModal(false);
+      setEditingMember(null);
+      toast.success(t('family.updateSuccess'));
+      
+    } catch (error) {
+      console.error('Failed to update family member:', error);
+      toast.error('שגיאה בעדכון בן משפחה');
+    }
+  };
+
+  const handleDeleteMember = async (memberId) => {
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Get existing members from localStorage
+      const existingMembers = JSON.parse(localStorage.getItem('parentflow_children') || '[]');
+      
+      // Remove member
+      const updatedMembers = existingMembers.filter(member => member.id !== memberId);
+      
+      // Save to localStorage
+      localStorage.setItem('parentflow_children', JSON.stringify(updatedMembers));
+      
+      // Also remove from tasks and events
+      const existingTasks = JSON.parse(localStorage.getItem('parentflow_tasks') || '[]');
+      const updatedTasks = existingTasks.filter(task => task.childId !== memberId);
+      localStorage.setItem('parentflow_tasks', JSON.stringify(updatedTasks));
+      
+      const existingEvents = JSON.parse(localStorage.getItem('parentflow_events') || '[]');
+      const updatedEvents = existingEvents.filter(event => event.childId !== memberId);
+      localStorage.setItem('parentflow_events', JSON.stringify(updatedEvents));
+      
+      // Reload data
+      await loadAllData();
+      
+      setDeleteConfirm(null);
+      toast.success(t('family.deleteSuccess'));
+      
+    } catch (error) {
+      console.error('Failed to delete family member:', error);
+      toast.error('שגיאה במחיקת בן משפחה');
+    }
+  };
+
+  const handleMemberSubmit = (memberData) => {
+    if (editingMember) {
+      handleUpdateMember(memberData);
+    } else {
+      handleAddMember(memberData);
+    }
+  };
+
+  const startEdit = (member) => {
+    setEditingMember(member);
+    setShowMemberModal(true);
+  };
+
+  const startDelete = (member) => {
+    setDeleteConfirm({
+      id: member.id,
+      name: member.name,
+      title: t('family.deleteMember'),
+      message: t('family.deleteConfirm')
+    });
+  };
+
+  const confirmDelete = () => {
+    if (deleteConfirm?.id) {
+      handleDeleteMember(deleteConfirm.id);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-navy-700 mb-1">
+            <Users className="w-5 h-5 inline mr-2" />
+            {t('family.members')}
+          </h3>
+          <p className="text-sm text-silver-600">
+            {t('familyDesc')}
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            setEditingMember(null);
+            setShowMemberModal(true);
+          }}
+          className="flex items-center gap-2 px-4 py-2 bg-sage-500 text-white rounded-lg hover:bg-sage-600 transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          {t('family.addMember')}
+        </button>
+      </div>
+
+      {/* Family Members List */}
+      <div className="space-y-4">
+        {children && children.length > 0 ? (
+          children.map((member) => (
+            <div
+              key={member.id}
+              className="flex items-center gap-4 p-4 bg-white border border-silver-200 rounded-lg hover:shadow-sm transition-shadow"
+            >
+              {/* Avatar */}
+              <div className="w-12 h-12 bg-silver-100 rounded-full flex items-center justify-center flex-shrink-0">
+                {member.photoUrl ? (
+                  <img 
+                    src={member.photoUrl} 
+                    alt={member.name}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="text-xl">{member.avatar || '👧'}</span>
+                )}
+              </div>
+
+              {/* Member Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="font-medium text-navy-700 truncate">
+                    {member.name}
+                  </h4>
+                  {member.age && (
+                    <span className="text-sm text-silver-500">
+                      ({member.age} {t('family.age')})
+                    </span>
+                  )}
+                </div>
+                
+                <div className="text-sm text-silver-600 space-y-1">
+                  {member.role && (
+                    <div>{t(`family.roles.${member.role}`)}</div>
+                  )}
+                  {member.school && (
+                    <div>
+                      {member.school}
+                      {member.grade && ` - ${t('family.grade')} ${member.grade}`}
+                      {member.className && ` (${member.className})`}
+                    </div>
+                  )}
+                  {member.birthDate && (
+                    <div>{t('family.birthDate')}: {member.birthDate}</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => startEdit(member)}
+                  className="p-2 text-silver-500 hover:text-sage-600 hover:bg-sage-50 rounded-lg transition-colors"
+                  title={t('family.editMember')}
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => startDelete(member)}
+                  className="p-2 text-silver-500 hover:text-coral-600 hover:bg-coral-50 rounded-lg transition-colors"
+                  title={t('family.deleteMember')}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-12 bg-silver-50 rounded-lg">
+            <Users className="w-12 h-12 text-silver-400 mx-auto mb-4" />
+            <h4 className="text-lg font-medium text-silver-600 mb-2">
+              {t('family.noMembers')}
+            </h4>
+            <p className="text-silver-500 mb-6">
+              {t('family.addFirst')}
+            </p>
+            <button
+              onClick={() => {
+                setEditingMember(null);
+                setShowMemberModal(true);
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-sage-500 text-white rounded-lg hover:bg-sage-600 transition-colors mx-auto"
+            >
+              <Plus className="w-4 h-4" />
+              {t('family.addMember')}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Family Member Modal */}
+      <FamilyMemberModal
+        isOpen={showMemberModal}
+        onClose={() => {
+          setShowMemberModal(false);
+          setEditingMember(null);
+        }}
+        onSubmit={handleMemberSubmit}
+        member={editingMember}
+        type={editingMember ? 'edit' : 'add'}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={confirmDelete}
+        title={deleteConfirm?.title}
+        message={deleteConfirm?.message}
+        confirmText={t('confirmation.delete')}
+        cancelText={t('confirmation.cancel')}
+        type="danger"
+      />
+    </div>
+  );
+};
+
+export default FamilyManagement;

@@ -33,4 +33,17 @@ i18n
     },
   });
 
+// Initialize body direction based on saved language
+i18n.on('initialized', (options) => {
+  const lng = i18n.language;
+  document.body.dir = lng === 'he' ? 'rtl' : 'ltr';
+  document.body.lang = lng;
+});
+
+// Update body direction when language changes
+i18n.on('languageChanged', (lng) => {
+  document.body.dir = lng === 'he' ? 'rtl' : 'ltr';
+  document.body.lang = lng;
+});
+
 export default i18n;

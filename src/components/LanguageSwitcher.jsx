@@ -1,17 +1,31 @@
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ChevronDown } from 'lucide-react';
 
 const LanguageSwitcher = () => {
   const { i18n, t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'he', name: 'עברית', flag: '🇮🇱' }
+  ];
+
+  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    // Update document direction for RTL support
-    document.documentElement.dir = lng === 'he' ? 'rtl' : 'ltr';
-    // Update document language
-    document.documentElement.lang = lng;
+    
+    // Only update body direction, not document root
+    document.body.dir = lng === 'he' ? 'rtl' : 'ltr';
+    // Update body language
+    document.body.lang = lng;
     
     // Store language preference
     localStorage.setItem('preferred-language', lng);
+    
+    setIsOpen(false);
     
     // Announce language change for screen readers
     const announcement = lng === 'he' ? 'שפה השתנתה לעברית' : 'Language changed to English';
@@ -25,37 +39,72 @@ const LanguageSwitcher = () => {
     setTimeout(() => document.body.removeChild(announcer), 1000);
   };
 
-  const handleKeyDown = (event, lng) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle keyboard navigation
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      setIsOpen(false);
+    } else if (event.key === 'ArrowDown' || event.key === 'Enter') {
       event.preventDefault();
-      changeLanguage(lng);
+      setIsOpen(!isOpen);
     }
   };
 
   return (
-    <div className="language-switcher" role="group" aria-label={t('language.switch')}>
+    <div className="relative" ref={dropdownRef}>
       <button
-        className={`language-button ${i18n.language === 'en' ? 'active' : ''}`}
-        onClick={() => changeLanguage('en')}
-        onKeyDown={(e) => handleKeyDown(e, 'en')}
-        aria-label={`${t('accessibility.language_switcher')} - ${t('language.english')}`}
-        aria-pressed={i18n.language === 'en'}
-        title={t('language.english')}
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        className="flex items-center gap-3 px-4 py-2.5 bg-white border border-silver-300 rounded-lg hover:border-teal-500 transition-all shadow-sm min-w-[160px] focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+        aria-label={t('accessibility.language_switcher')}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
       >
-        <span className="language-flag">🇺🇸</span>
-        <span className="language-text">{t('language.english')}</span>
+        <span className="text-lg">{currentLanguage.flag}</span>
+        <span className="flex-1 text-left font-medium text-navy-700">
+          {currentLanguage.name}
+        </span>
+        <ChevronDown 
+          className={`w-4 h-4 text-silver-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
-      <button
-        className={`language-button ${i18n.language === 'he' ? 'active' : ''}`}
-        onClick={() => changeLanguage('he')}
-        onKeyDown={(e) => handleKeyDown(e, 'he')}
-        aria-label={`${t('accessibility.language_switcher')} - ${t('language.hebrew')}`}
-        aria-pressed={i18n.language === 'he'}
-        title={t('language.hebrew')}
-      >
-        <span className="language-flag">🇮🇱</span>
-        <span className="language-text">{t('language.hebrew')}</span>
-      </button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-silver-300 rounded-lg shadow-lg z-50">
+          <div role="listbox" aria-label={t('language.switch')}>
+            {languages.map((language) => (
+              <button
+                key={language.code}
+                onClick={() => changeLanguage(language.code)}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-teal-50 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                  i18n.language === language.code 
+                    ? 'bg-teal-50 text-teal-700' 
+                    : 'text-navy-600'
+                }`}
+                role="option"
+                aria-selected={i18n.language === language.code}
+              >
+                <span className="text-lg">{language.flag}</span>
+                <span className="font-medium">{language.name}</span>
+                {i18n.language === language.code && (
+                  <span className="ml-auto text-teal-600">✓</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
