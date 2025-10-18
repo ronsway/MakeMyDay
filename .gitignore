@@ -5,6 +5,12 @@ dist/
 .vscode/
 .idea/
 
+# Database files
+*.db
+*.db-journal
+prisma/dev.db
+prisma/dev.db-journal
+
 # OS
 .DS_Store
 Thumbs.db
