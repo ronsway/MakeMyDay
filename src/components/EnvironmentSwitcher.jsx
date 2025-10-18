@@ -22,10 +22,10 @@ const EnvironmentSwitcher = () => {
       icon: Settings,
       color: 'blue',
       features: [
-        'דיבוג מלא',
-        'לוגים מפורטים',
-        'מסד נתונים מקומי',
-        'בדיקות אוטומטיות'
+        t('settings.modes.features.fullDebug', 'דיבוג מלא'),
+        t('settings.modes.features.detailedLogs', 'לוגים מפורטים'),
+        t('settings.modes.features.localDatabase', 'מסד נתונים מקומי'),
+        t('settings.modes.features.autoTests', 'בדיקות אוטומטיות')
       ]
     },
     {
@@ -35,10 +35,10 @@ const EnvironmentSwitcher = () => {
       icon: TestTube,
       color: 'orange',
       features: [
-        'נתונים מדומים',
-        'מסד נתונים נפרד',
-        'הדמיית שירותים חיצוניים',
-        'בדיקות אוטומטיות'
+        t('settings.modes.features.mockData', 'נתונים מדומים'),
+        t('settings.modes.features.separateDatabase', 'מסד נתונים נפרד'),
+        t('settings.modes.features.externalServices', 'הדמיית שירותים חיצוניים'),
+        t('settings.modes.features.autoTests', 'בדיקות אוטומטיות')
       ]
     },
     {
@@ -48,10 +48,10 @@ const EnvironmentSwitcher = () => {
       icon: Globe,
       color: 'green',
       features: [
-        'נתונים אמיתיים',
-        'אבטחה מוגברת',
-        'ביצועים מיטביים',
-        'גיבוי אוטומטי'
+        t('settings.modes.features.realData', 'נתונים אמיתיים'),
+        t('settings.modes.features.enhancedSecurity', 'אבטחה מוגברת'),
+        t('settings.modes.features.optimalPerformance', 'ביצועים מיטביים'),
+        t('settings.modes.features.autoBackup', 'גיבוי אוטומטי')
       ]
     }
   ];

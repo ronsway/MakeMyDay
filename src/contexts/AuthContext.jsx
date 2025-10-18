@@ -22,6 +22,15 @@ export function AuthProvider({ children }) {
     if (token) {
       loadUser();
     } else {
+      // Load from localStorage even without token (for demo/dev mode)
+      const savedProfile = localStorage.getItem('user_profile');
+      if (savedProfile) {
+        try {
+          setUser(JSON.parse(savedProfile));
+        } catch (error) {
+          console.error('Failed to parse saved profile:', error);
+        }
+      }
       setLoading(false);
     }
   }, []);
@@ -31,7 +40,19 @@ export function AuthProvider({ children }) {
       const response = await fetchAPI('/auth/me');
       if (response.ok) {
         const data = await response.json();
-        setUser(data);
+        
+        // Merge with localStorage profile data (avatar, photoUrl, etc.)
+        const savedProfile = localStorage.getItem('user_profile');
+        if (savedProfile) {
+          try {
+            const localData = JSON.parse(savedProfile);
+            setUser({ ...data, ...localData });
+          } catch (error) {
+            setUser(data);
+          }
+        } else {
+          setUser(data);
+        }
       } else {
         clearTokens();
       }
@@ -120,12 +141,53 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function updateProfile(profileData) {
+    try {
+      // Update user state immediately for better UX
+      setUser(prev => ({
+        ...prev,
+        ...profileData
+      }));
+
+      // Try to update on server if authenticated
+      const token = getToken();
+      if (token) {
+        const response = await fetchAPI('/auth/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(profileData),
+        });
+
+        if (response.ok) {
+          const updatedUser = await response.json();
+          setUser(updatedUser);
+        }
+      }
+
+      // Always save to localStorage as backup
+      const currentUser = JSON.parse(localStorage.getItem('user_profile') || '{}');
+      localStorage.setItem('user_profile', JSON.stringify({
+        ...currentUser,
+        ...profileData
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error('Update profile error:', error);
+      // Even if server update fails, keep local changes
+      return { success: true };
+    }
+  }
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    updateProfile,
     isAuthenticated: !!user,
   };
 

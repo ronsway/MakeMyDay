@@ -2,18 +2,13 @@ import { motion } from 'framer-motion';
 import { MapPin, Clock, Trash2, Edit, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../lib/utils';
+import { useSettings } from '../hooks/useSettings';
 
 export default function EventCard({ event, onEdit, onDelete, showChild = true }) {
   const { t } = useTranslation();
+  const { formatTime } = useSettings();
   const startTime = new Date(event.startTime);
   const endTime = event.endTime ? new Date(event.endTime) : null;
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('he-IL', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   return (
     <motion.div

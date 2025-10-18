@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, User, Calendar, GraduationCap, School } from 'lucide-react';
+import { X, Upload, User, Calendar, GraduationCap, School, Camera, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ImageCropper from './ImageCropper';
 
@@ -31,6 +31,7 @@ const FamilyMemberModal = ({
   });
 
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [photoFile, setPhotoFile] = useState(null);
   const [showImageCropper, setShowImageCropper] = useState(false);
   const [tempImageUrl, setTempImageUrl] = useState(null);
@@ -178,68 +179,201 @@ const FamilyMemberModal = ({
             {/* Avatar Section */}
             <div className="mb-6 text-center">
               <div className="mb-4">
-                <div className="w-20 h-20 mx-auto bg-silver-100 rounded-full flex items-center justify-center mb-3">
-                  {formData.photoUrl ? (
-                    <img 
-                      src={formData.photoUrl} 
-                      alt={formData.name}
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-3xl">{formData.avatar}</span>
-                  )}
-                </div>
-                
-                <div className="flex gap-2 justify-center flex-wrap">
+                <div className="relative w-20 h-20 mx-auto mb-3">
+                  <div 
+                    className="w-20 h-20 bg-silver-100 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => setShowPhotoOptions(true)}
+                  >
+                    {formData.photoUrl ? (
+                      <img 
+                        src={formData.photoUrl} 
+                        alt={formData.name}
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-3xl">{formData.avatar}</span>
+                    )}
+                  </div>
+                  
+                  {/* Edit overlay */}
                   <button
                     type="button"
-                    onClick={() => setShowAvatarPicker(!showAvatarPicker)}
-                    className="px-3 py-2 text-sm text-sage-600 border border-sage-300 rounded-lg hover:bg-sage-50 transition-colors"
+                    onClick={() => setShowPhotoOptions(true)}
+                    className="absolute inset-0 w-20 h-20 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
                   >
-                    <User className="w-4 h-4 inline mr-1" />
-                    {t('family.selectAvatar')}
+                    <Camera className="w-5 h-5 text-white" />
                   </button>
-                  
-                  {/* Edit Photo Button (when photo exists) */}
-                  {formData.photoUrl && (
-                    <button
-                      type="button"
-                      onClick={handleEditExistingPhoto}
-                      className="px-3 py-2 text-sm text-orange-600 border border-orange-300 rounded-lg hover:bg-orange-50 transition-colors"
-                    >
-                      <Upload className="w-4 h-4 inline mr-1" />
-                      {t('family.editPhoto')}
-                    </button>
-                  )}
-                  
-                  <label className="px-3 py-2 text-sm text-sage-600 border border-sage-300 rounded-lg hover:bg-sage-50 transition-colors cursor-pointer">
-                    <Upload className="w-4 h-4 inline mr-1" />
-                    {formData.photoUrl ? t('family.replacePhoto') : t('family.uploadPhoto')}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                      className="hidden"
-                    />
-                  </label>
                 </div>
               </div>
 
-              {/* Avatar Picker */}
+
+
+              {/* Photo Options Modal */}
+              {showPhotoOptions && (
+                <div 
+                  className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+                  onClick={() => setShowPhotoOptions(false)}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="bg-white rounded-xl shadow-xl w-full max-w-md"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-navy-700">
+                          {t('family.photoOptions', 'אפשרויות תמונה')}
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => setShowPhotoOptions(false)}
+                          className="p-1 text-silver-500 hover:text-silver-700 transition-colors"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {/* Upload New Photo */}
+                        <label className="flex items-center gap-3 p-3 bg-teal-50 hover:bg-teal-100 rounded-lg cursor-pointer transition-colors">
+                          <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
+                            <Camera className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1 text-right">
+                            <h4 className="font-medium text-navy-700">{t('family.uploadPhoto', 'העלה תמונה')}</h4>
+                            <p className="text-sm text-silver-600">{t('family.selectFromDevice', 'בחר תמונה מהמכשיר')}</p>
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              handlePhotoUpload(e);
+                              setShowPhotoOptions(false);
+                            }}
+                            className="hidden"
+                          />
+                        </label>
+
+                        {/* Edit Existing Photo */}
+                        {formData.photoUrl && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditExistingPhoto();
+                              setShowPhotoOptions(false);
+                            }}
+                            className="w-full flex items-center gap-3 p-3 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
+                          >
+                            <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                              <Edit className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="flex-1 text-right">
+                              <h4 className="font-medium text-navy-700">{t('family.editPhoto', 'ערוך תמונה')}</h4>
+                              <p className="text-sm text-silver-600">{t('family.cropPhoto', 'חתוך את התמונה הקיימת')}</p>
+                            </div>
+                          </button>
+                        )}
+
+                        {/* Choose Avatar */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAvatarPicker(true);
+                            setShowPhotoOptions(false);
+                          }}
+                          className="w-full flex items-center gap-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                        >
+                          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1 text-right">
+                            <h4 className="font-medium text-navy-700">{t('family.selectAvatar', 'בחר אווטאר')}</h4>
+                            <p className="text-sm text-silver-600">{t('family.chooseEmoji', 'בחר אימוג\'י לייצג')}</p>
+                          </div>
+                        </button>
+
+                        {/* Remove Photo */}
+                        {formData.photoUrl && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setFormData(prev => ({ ...prev, photoUrl: '', avatar: '👧' }));
+                              setShowPhotoOptions(false);
+                            }}
+                            className="w-full flex items-center gap-3 p-3 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                          >
+                            <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                              <X className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="flex-1 text-right">
+                              <h4 className="font-medium text-navy-700">{t('family.removePhoto', 'הסר תמונה')}</h4>
+                              <p className="text-sm text-silver-600">{t('family.removePhotoDesc', 'חזור לאייקון ברירת מחדל')}</p>
+                            </div>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+
+              {/* Avatar Picker Modal */}
               {showAvatarPicker && (
-                <div className="grid grid-cols-7 gap-2 p-3 bg-silver-50 rounded-lg">
-                  {AVATAR_OPTIONS.map((emoji) => (
-                    <button
-                      key={emoji}
-                      type="button"
-                      onClick={() => handleAvatarSelect(emoji)}
-                      className={`w-10 h-10 text-xl rounded-lg hover:bg-white transition-colors ${
-                        formData.avatar === emoji ? 'bg-sage-100 ring-2 ring-sage-300' : ''
-                      }`}
-                    >
-                      {emoji}
-                    </button>
-                  ))}
+                <div 
+                  className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                  onClick={() => setShowAvatarPicker(false)}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="bg-white rounded-xl shadow-xl w-full max-w-md"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-navy-700">
+                          {t('family.selectAvatar', 'בחר אווטאר')}
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAvatarPicker(false);
+                          }}
+                          className="p-1 text-silver-500 hover:text-silver-700 transition-colors"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-6 gap-3">
+                        {AVATAR_OPTIONS.map((emoji) => (
+                          <button
+                            key={emoji}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAvatarSelect(emoji);
+                              setShowAvatarPicker(false);
+                            }}
+                            className={`w-12 h-12 text-2xl rounded-lg hover:bg-silver-100 transition-colors flex items-center justify-center ${
+                              formData.avatar === emoji && !formData.photoUrl 
+                                ? 'bg-teal-100 ring-2 ring-teal-300' 
+                                : 'bg-white'
+                            }`}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
               )}
             </div>
@@ -368,7 +502,11 @@ const FamilyMemberModal = ({
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 bg-sage-500 text-white rounded-lg hover:bg-sage-600 transition-colors disabled:bg-silver-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-2 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+                style={{
+                  backgroundColor: '#10b981',
+                  cursor: 'pointer'
+                }}
               >
                 {type === 'edit' ? t('actions.save') : t('family.addMember')}
               </button>
