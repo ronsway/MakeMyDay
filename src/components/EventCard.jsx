@@ -2,18 +2,13 @@ import { motion } from 'framer-motion';
 import { MapPin, Clock, Trash2, Edit, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../lib/utils';
+import { useSettings } from '../hooks/useSettings';
 
 export default function EventCard({ event, onEdit, onDelete, showChild = true }) {
   const { t } = useTranslation();
+  const { formatDate, formatTime } = useSettings();
   const startTime = new Date(event.startTime);
   const endTime = event.endTime ? new Date(event.endTime) : null;
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('he-IL', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   return (
     <motion.div
@@ -57,17 +52,23 @@ export default function EventCard({ event, onEdit, onDelete, showChild = true })
           )}
 
           {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-3 text-xs text-silver-600">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-silver-700">
+            {/* Date and Time combined for better visibility */}
+            <div className="flex items-center gap-2 bg-orange-50 px-2 py-1 rounded">
+              <Calendar className="w-4 h-4 text-orange-600" />
+              <span className="font-medium">{formatDate(startTime, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+            </div>
+
             {/* Time */}
             {event.allDay ? (
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>כל היום</span>
+              <div className="flex items-center gap-1 bg-coral-50 px-2 py-1 rounded">
+                <Clock className="w-4 h-4 text-coral-600" />
+                <span className="font-medium">{t('events.allDay', 'כל היום')}</span>
               </div>
             ) : (
-              <div className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" />
-                <span>
+              <div className="flex items-center gap-1 bg-coral-50 px-2 py-1 rounded">
+                <Clock className="w-4 h-4 text-coral-600" />
+                <span className="font-medium">
                   {formatTime(startTime)}
                   {endTime && ` - ${formatTime(endTime)}`}
                 </span>
@@ -76,9 +77,9 @@ export default function EventCard({ event, onEdit, onDelete, showChild = true })
 
             {/* Location */}
             {event.location && (
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5" />
-                <span>{event.location}</span>
+              <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded">
+                <MapPin className="w-4 h-4 text-blue-600" />
+                <span className="font-medium">{event.location}</span>
               </div>
             )}
 

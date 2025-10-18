@@ -5,6 +5,56 @@ All notable changes to ParentFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-10-18
+
+### Added
+
+- **Family Profile Feature**
+  - Complete family profile management with photo upload and cropping
+  - Family-wide information storage (name, address, phone, email, etc.)
+  - Family profile card display in Family Management page
+  - Family photo integration with "All children" selector
+
+- **User Profile Enhancements**
+  - User avatar/photo upload with cropping functionality
+  - Avatar display across all navigation areas (Dashboard, Today View, Settings)
+  - Profile photo persistence with localStorage and AuthContext integration
+  - Avatar picker modal with emoji selection
+
+- **Settings Improvements**
+  - General Settings tab added with language, timezone, date/time format options
+  - General Settings positioned as first tab in settings menu
+  - Complete translation support for Environment Switcher features
+  - All mode features now properly translated (Hebrew/English)
+
+- **Translation System**
+  - Added 20+ translation keys for family profile feature
+  - Environment switcher feature translations (full debug, detailed logs, etc.)
+  - Comprehensive bilingual support for all new features
+
+### Fixed
+
+- Save buttons visibility across all modals (inline background colors)
+- Family profile photo not displaying after save (React state management)
+- ImageCropper component prop mismatches
+- User avatar not persisting across page refreshes
+- Photo option modal text alignment consistency (RTL support)
+- General settings missing from settings page
+
+### Changed
+
+- Improved state management for profile data with proper React patterns
+- Enhanced localStorage integration for persistent data storage
+- Cleaned up debug styling and console logs from production code
+- Removed temporary test files and scripts
+
+### Technical
+
+- Converted from inline localStorage reads to declarative React state
+- Added proper useEffect patterns for data loading
+- Implemented updateProfile function in AuthContext
+- Enhanced photo upload/crop workflow across all modals
+
 ## [1.0.0] - 2025-10-12
 
 ### 🎉 Initial Production Release

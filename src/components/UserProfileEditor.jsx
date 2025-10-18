@@ -216,18 +216,17 @@ const UserProfileEditor = () => {
         
         <button
           onClick={() => isEditing ? handleCancel() : setIsEditing(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors border-4 border-yellow-400"
-          style={{ backgroundColor: isEditing ? 'red' : 'green' }}
+          className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
         >
           {isEditing ? (
             <>
               <X className="w-4 h-4" />
-              {t('actions.cancel', 'ביטול')} [EDITING MODE]
+              {t('actions.cancel', 'ביטול')}
             </>
           ) : (
             <>
               <Edit className="w-4 h-4" />
-              {t('actions.edit', 'עריכה')} [VIEW MODE - CLICK TO EDIT]
+              {t('actions.edit', 'עריכה')}
             </>
           )}
         </button>
@@ -235,12 +234,16 @@ const UserProfileEditor = () => {
 
       {/* Photo Options Modal */}
       {showPhotoOptions && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowPhotoOptions(false)}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             className="bg-white rounded-xl shadow-xl w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -257,11 +260,13 @@ const UserProfileEditor = () => {
 
               <div className="space-y-3">
                 {/* Upload New Photo */}
-                <label className="flex items-center gap-3 p-3 bg-teal-50 hover:bg-teal-100 rounded-lg cursor-pointer transition-colors">
+                <label 
+                  className="flex items-center gap-3 p-3 bg-teal-50 hover:bg-teal-100 rounded-lg cursor-pointer transition-colors"
+                >
                   <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
                     <Camera className="w-5 h-5 text-white" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 text-right">
                     <h4 className="font-medium text-navy-700">{t('profile.uploadNew', 'העלה תמונה חדשה')}</h4>
                     <p className="text-sm text-silver-600">{t('profile.uploadNewDesc', 'בחר תמונה מהמכשיר שלך')}</p>
                   </div>
@@ -279,7 +284,8 @@ const UserProfileEditor = () => {
                 {/* Edit Existing Photo */}
                 {profileData.photoUrl && (
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleEditExistingPhoto();
                       setShowPhotoOptions(false);
                     }}
@@ -297,7 +303,11 @@ const UserProfileEditor = () => {
 
                 {/* Choose Avatar */}
                 <button
-                  onClick={() => setShowAvatarPicker(true)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAvatarPicker(true);
+                    setShowPhotoOptions(false);
+                  }}
                   className="w-full flex items-center gap-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                 >
                   <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
@@ -312,7 +322,8 @@ const UserProfileEditor = () => {
                 {/* Remove Photo */}
                 {profileData.photoUrl && (
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setProfileData(prev => ({ ...prev, photoUrl: '', avatar: '👤' }));
                       setShowPhotoOptions(false);
                     }}
@@ -335,12 +346,16 @@ const UserProfileEditor = () => {
 
       {/* Avatar Picker Modal */}
       {showAvatarPicker && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowAvatarPicker(false)}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             className="bg-white rounded-xl shadow-xl w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -348,7 +363,10 @@ const UserProfileEditor = () => {
                   {t('profile.selectAvatar', 'בחר אייקון')}
                 </h3>
                 <button
-                  onClick={() => setShowAvatarPicker(false)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAvatarPicker(false);
+                  }}
                   className="p-1 text-silver-500 hover:text-silver-700 transition-colors"
                 >
                   <X className="w-5 h-5" />
@@ -359,7 +377,8 @@ const UserProfileEditor = () => {
                 {avatarOptions.map((emoji) => (
                   <button
                     key={emoji}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleAvatarSelect(emoji);
                       setShowAvatarPicker(false);
                       setShowPhotoOptions(false);
@@ -367,7 +386,7 @@ const UserProfileEditor = () => {
                     className={`w-12 h-12 text-2xl rounded-lg hover:bg-silver-100 transition-colors flex items-center justify-center ${
                       profileData.avatar === emoji && !profileData.photoUrl 
                         ? 'bg-teal-100 ring-2 ring-teal-300' 
-                        : ''
+                        : 'bg-white'
                     }`}
                   >
                     {emoji}
@@ -494,18 +513,13 @@ const UserProfileEditor = () => {
       </div>
 
       {/* Save Button */}
-      <div className="pt-4 border-t border-silver-200">
-        <p className="text-sm mb-2" style={{ color: isEditing ? 'green' : 'red' }}>
-          DEBUG: isEditing = {isEditing ? 'true' : 'false'}
-        </p>
-        {isEditing && (
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="flex items-center gap-2 px-6 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border-4 border-red-500"
-              style={{ backgroundColor: 'purple' }}
-            >
+      {isEditing && (
+        <div className="flex items-center gap-3 pt-4 border-t border-silver-200">
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex items-center gap-2 px-6 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {isSaving ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -517,18 +531,17 @@ const UserProfileEditor = () => {
                 {t('actions.save', 'שמור שינויים')}
               </>
             )}
-            </button>
-            
-            <button
-              onClick={handleCancel}
-              disabled={isSaving}
-              className="px-4 py-2 text-silver-600 border border-silver-300 rounded-lg hover:bg-silver-50 transition-colors disabled:opacity-50"
-            >
-              {t('actions.cancel', 'ביטול')}
-            </button>
-          </div>
-        )}
-      </div>
+          </button>
+          
+          <button
+            onClick={handleCancel}
+            disabled={isSaving}
+            className="px-4 py-2 text-silver-600 border border-silver-300 rounded-lg hover:bg-silver-50 transition-colors disabled:opacity-50"
+          >
+            {t('actions.cancel', 'ביטול')}
+          </button>
+        </div>
+      )}
 
       {/* Image Cropper Modal */}
       <ImageCropper

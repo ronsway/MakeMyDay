@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, Calendar, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const AddItemModal = ({ 
@@ -16,6 +16,14 @@ const AddItemModal = ({
   const [selectedChild, setSelectedChild] = useState(children[0]?.id || '');
   const [priority, setPriority] = useState('normal');
   const [loading, setLoading] = useState(false);
+  
+  // Date and time fields
+  const today = new Date().toISOString().split('T')[0];
+  const [dueDate, setDueDate] = useState(today);
+  const [dueTime, setDueTime] = useState('');
+  const [eventDate, setEventDate] = useState(today);
+  const [startTime, setStartTime] = useState('09:00');
+  const [endTime, setEndTime] = useState('10:00');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,11 +39,13 @@ const AddItemModal = ({
 
       if (type === 'task') {
         itemData.priority = priority;
-        itemData.dueDate = new Date().toISOString().split('T')[0];
+        itemData.dueDate = dueDate;
+        if (dueTime) {
+          itemData.dueTime = dueTime;
+        }
       } else {
-        const today = new Date().toISOString().split('T')[0];
-        itemData.startTime = `${today}T09:00:00`;
-        itemData.endTime = `${today}T10:00:00`;
+        itemData.startTime = `${eventDate}T${startTime}:00`;
+        itemData.endTime = `${eventDate}T${endTime}:00`;
         itemData.location = '';
         itemData.type = 'general';
       }
@@ -46,6 +56,11 @@ const AddItemModal = ({
       setTitle('');
       setDescription('');
       setPriority('normal');
+      setDueDate(today);
+      setDueTime('');
+      setEventDate(today);
+      setStartTime('09:00');
+      setEndTime('10:00');
       onClose();
     } catch (error) {
       console.error(`Error creating ${type}:`, error);
@@ -143,6 +158,84 @@ const AddItemModal = ({
                   <option value="normal">{t('tasks.normal')}</option>
                   <option value="urgent">{t('tasks.urgent')}</option>
                 </select>
+              </div>
+            )}
+
+            {/* Date and Time for Tasks */}
+            {type === 'task' && (
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                    <Calendar className="w-4 h-4" />
+                    {t('tasks.dueDate', 'Due Date')}
+                  </label>
+                  <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                    <Clock className="w-4 h-4" />
+                    {t('tasks.dueTime', 'Time')}
+                  </label>
+                  <input
+                    type="time"
+                    value={dueTime}
+                    onChange={(e) => setDueTime(e.target.value)}
+                    className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Date and Time for Events */}
+            {type === 'event' && (
+              <div className="space-y-3">
+                <div>
+                  <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                    <Calendar className="w-4 h-4" />
+                    {t('events.date', 'Date')}
+                  </label>
+                  <input
+                    type="date"
+                    value={eventDate}
+                    onChange={(e) => setEventDate(e.target.value)}
+                    className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                      <Clock className="w-4 h-4" />
+                      {t('events.startTime', 'Start Time')}
+                    </label>
+                    <input
+                      type="time"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                      <Clock className="w-4 h-4" />
+                      {t('events.endTime', 'End Time')}
+                    </label>
+                    <input
+                      type="time"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                </div>
               </div>
             )}
 

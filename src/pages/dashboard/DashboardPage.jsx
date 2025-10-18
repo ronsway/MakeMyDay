@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Calendar, CheckSquare, Users, Bell, Settings, LogOut } from 'lucide-react';
+import { Calendar, CheckSquare, Users, Bell, Settings, LogOut, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function DashboardPage() {
@@ -25,6 +25,17 @@ export default function DashboardPage() {
               <h1 className="text-2xl font-bold text-navy-600">ParentFlow</h1>
             </div>
             <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-silver-100 rounded-full flex items-center justify-center overflow-hidden">
+                {user?.photoUrl ? (
+                  <img 
+                    src={user.photoUrl} 
+                    alt={user.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-2xl">{user?.avatar || <User className="w-5 h-5 text-silver-600" />}</span>
+                )}
+              </div>
               <div className="text-right">
                 <p className="text-sm font-medium text-navy-600">{user?.name}</p>
                 <p className="text-xs text-silver-600">{user?.email}</p>

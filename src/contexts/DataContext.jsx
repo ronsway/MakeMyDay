@@ -271,10 +271,88 @@ export function DataProvider({ children: childrenProp }) {
       ? allEventsWithChildren
       : allEventsWithChildren.filter((e) => e.childId === selectedChildId);
 
-  // Today's tasks and events
+  // Today's tasks and events - including overdue items
   const today = new Date().toISOString().split('T')[0];
-  const todaysTasks = filteredTasks.filter((t) => t.dueDate === today);
-  const todaysEvents = filteredEvents.filter((e) => e.startTime?.startsWith(today));
+  const todayDate = new Date(today);
+  
+  const todaysTasks = filteredTasks.filter((t) => {
+    if (!t.dueDate) return false;
+    // Normalize date to YYYY-MM-DD format for comparison
+    const taskDate = t.dueDate.includes('T') 
+      ? t.dueDate.split('T')[0] 
+      : t.dueDate;
+    const taskDateObj = new Date(taskDate);
+    
+    // Show tasks from today or overdue tasks that aren't completed
+    const isToday = taskDate === today;
+    const isOverdue = taskDateObj < todayDate && t.status !== 'done';
+    
+    return isToday || isOverdue;
+  });
+  
+  const todaysEvents = filteredEvents.filter((e) => {
+    if (!e.startTime) return false;
+    // Normalize date to YYYY-MM-DD format for comparison
+    const eventDate = e.startTime.includes('T')
+      ? e.startTime.split('T')[0]
+      : e.startTime.split(' ')[0]; // Handle potential space-separated format
+    
+    const eventDateObj = new Date(eventDate);
+    const isToday = eventDate === today;
+    const isFuture = eventDateObj > todayDate;
+    
+    // Show only today's events and future events (not past events)
+    // Unlike tasks, past events are considered "done" and don't need to be shown
+    return isToday || isFuture;
+  });
+
+  // Past events (last 7 days, excluding today)
+  const pastEvents = filteredEvents.filter((e) => {
+    if (!e.startTime) return false;
+    const eventDate = e.startTime.includes('T')
+      ? e.startTime.split('T')[0]
+      : e.startTime.split(' ')[0];
+    
+    const eventDateObj = new Date(eventDate);
+    const isPast = eventDateObj < todayDate;
+    
+    // Show events from the last 7 days (not including today)
+    const sevenDaysAgo = new Date(todayDate);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const isWithinLast7Days = eventDateObj >= sevenDaysAgo;
+    
+    return isPast && isWithinLast7Days;
+  }).sort((a, b) => {
+    // Sort by date descending (most recent first)
+    const dateA = new Date(a.startTime);
+    const dateB = new Date(b.startTime);
+    return dateB - dateA;
+  });
+
+  // Past tasks (last 7 days, excluding today and overdue)
+  // Only show completed tasks from the past
+  const pastTasks = filteredTasks.filter((t) => {
+    if (!t.dueDate) return false;
+    const taskDate = t.dueDate.includes('T')
+      ? t.dueDate.split('T')[0]
+      : t.dueDate;
+    
+    const taskDateObj = new Date(taskDate);
+    const isPast = taskDateObj < todayDate;
+    
+    // Show completed tasks from the last 7 days (not including today or overdue incomplete tasks)
+    const sevenDaysAgo = new Date(todayDate);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const isWithinLast7Days = taskDateObj >= sevenDaysAgo;
+    
+    // Only show completed tasks (incomplete ones appear in "Today's Tasks" as overdue)
+    return isPast && isWithinLast7Days && t.status === 'done';
+  }).sort((a, b) => {
+    // Sort by date descending (most recent first)
+    const dateA = new Date(a.dueDate);
+    const dateB = new Date(b.dueDate);
+    return dateB - dateA;
+  });
 
   // Stats
   const stats = {
@@ -296,6 +374,10 @@ export function DataProvider({ children: childrenProp }) {
     // Today's data
     todaysTasks,
     todaysEvents,
+    
+    // Historical data
+    pastEvents,
+    pastTasks,
     
     // Stats
     stats,

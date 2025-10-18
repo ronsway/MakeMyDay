@@ -194,7 +194,7 @@ const ImageCropper = ({ isOpen, onClose, onCrop, imageUrl, aspectRatio = 1 }) =>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3 p-4 border-t border-silver-200">
+          <div className="flex items-center gap-3 p-4 border-t border-silver-200 bg-white">
             <button
               onClick={onClose}
               className="flex-1 px-4 py-2 text-silver-600 border border-silver-300 rounded-lg hover:bg-silver-50 transition-colors"
@@ -204,7 +204,12 @@ const ImageCropper = ({ isOpen, onClose, onCrop, imageUrl, aspectRatio = 1 }) =>
             <button
               onClick={handleCrop}
               disabled={!completedCrop}
-              className="flex-1 px-4 py-2 bg-sage-500 text-white rounded-lg hover:bg-sage-600 transition-colors disabled:bg-silver-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+              style={{
+                backgroundColor: !completedCrop ? '#d1d5db' : '#10b981',
+                cursor: !completedCrop ? 'not-allowed' : 'pointer',
+                opacity: !completedCrop ? 0.6 : 1
+              }}
             >
               <Check className="w-4 h-4" />
               {t('family.cropAndSave', 'חתוך ושמור')}

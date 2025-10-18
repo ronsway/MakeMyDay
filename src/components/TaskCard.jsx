@@ -2,9 +2,11 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, Circle, Clock, AlertCircle, Trash2, Edit, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../lib/utils';
+import { useSettings } from '../hooks/useSettings';
 
 export default function TaskCard({ task, onToggle, onEdit, onDelete, showChild = true }) {
   const { t } = useTranslation();
+  const { formatDate, formatTime } = useSettings();
   const priorityColors = {
     normal: 'text-silver-600',
     high: 'text-orange-500',
@@ -91,11 +93,8 @@ export default function TaskCard({ task, onToggle, onEdit, onDelete, showChild =
               >
                 <Clock className="w-3.5 h-3.5" />
                 <span>
-                  {new Date(task.dueDate).toLocaleDateString('he-IL', {
-                    day: 'numeric',
-                    month: 'short',
-                  })}
-                  {task.dueTime && ` ${task.dueTime}`}
+                  {formatDate(task.dueDate, { day: 'numeric', month: 'short' })}
+                  {task.dueTime && ` ${formatTime(task.dueDate + 'T' + task.dueTime)}`}
                 </span>
               </div>
             )}
