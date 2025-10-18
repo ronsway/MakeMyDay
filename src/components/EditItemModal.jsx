@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save } from 'lucide-react';
+import { X, Save, Calendar, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const EditItemModal = ({ 
@@ -17,6 +17,13 @@ const EditItemModal = ({
   const [selectedChild, setSelectedChild] = useState('');
   const [priority, setPriority] = useState('normal');
   const [loading, setLoading] = useState(false);
+  
+  // Date and time fields
+  const [dueDate, setDueDate] = useState('');
+  const [dueTime, setDueTime] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
 
   // Initialize form when item changes
   useEffect(() => {
@@ -25,8 +32,26 @@ const EditItemModal = ({
       setDescription(item.description || '');
       setSelectedChild(item.childId || '');
       setPriority(item.priority || 'normal');
+      
+      // Initialize date/time fields based on type
+      if (type === 'task') {
+        // Task: dueDate (YYYY-MM-DD) and optional dueTime (HH:mm)
+        setDueDate(item.dueDate?.split('T')[0] || '');
+        setDueTime(item.dueTime || '');
+      } else if (type === 'event') {
+        // Event: startTime and endTime (YYYY-MM-DDTHH:mm:ss)
+        if (item.startTime) {
+          const [date, time] = item.startTime.split('T');
+          setStartDate(date);
+          setStartTime(time?.substring(0, 5) || ''); // HH:mm
+        }
+        if (item.endTime) {
+          const [, time] = item.endTime.split('T');
+          setEndTime(time?.substring(0, 5) || ''); // HH:mm
+        }
+      }
     }
-  }, [item]);
+  }, [item, type]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +67,19 @@ const EditItemModal = ({
 
       if (type === 'task') {
         updates.priority = priority;
+        if (dueDate) {
+          updates.dueDate = dueDate;
+        }
+        if (dueTime) {
+          updates.dueTime = dueTime;
+        }
+      } else if (type === 'event') {
+        if (startDate && startTime) {
+          updates.startTime = `${startDate}T${startTime}:00`;
+        }
+        if (startDate && endTime) {
+          updates.endTime = `${startDate}T${endTime}:00`;
+        }
       }
 
       await onSubmit(item.id, updates);
@@ -142,6 +180,83 @@ const EditItemModal = ({
                   <option value="normal">{t('tasks.normal')}</option>
                   <option value="urgent">{t('tasks.urgent')}</option>
                 </select>
+              </div>
+            )}
+
+            {/* Date and Time for Tasks */}
+            {type === 'task' && (
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                    <Calendar className="w-4 h-4" />
+                    {t('tasks.dueDate', 'Due Date')}
+                  </label>
+                  <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                    <Clock className="w-4 h-4" />
+                    {t('tasks.dueTime', 'Time')}
+                  </label>
+                  <input
+                    type="time"
+                    value={dueTime}
+                    onChange={(e) => setDueTime(e.target.value)}
+                    className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Date and Time for Events */}
+            {type === 'event' && (
+              <div className="space-y-3">
+                <div>
+                  <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                    <Calendar className="w-4 h-4" />
+                    {t('events.date', 'Date')}
+                  </label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                      <Clock className="w-4 h-4" />
+                      {t('events.startTime', 'Start Time')}
+                    </label>
+                    <input
+                      type="time"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-1 text-sm font-medium text-navy-700 mb-2">
+                      <Clock className="w-4 h-4" />
+                      {t('events.endTime', 'End Time')}
+                    </label>
+                    <input
+                      type="time"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      className="w-full p-3 border border-silver-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                </div>
               </div>
             )}
 

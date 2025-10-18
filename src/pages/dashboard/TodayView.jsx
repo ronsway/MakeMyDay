@@ -10,6 +10,7 @@ import {
   X,
   Settings,
   User,
+  ChevronDown,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useData } from '../../contexts/DataContext';
 import { useSettings } from '../../hooks/useSettings';
+import { cn } from '../../lib/utils';
 import TaskCard from '../../components/TaskCard';
 import EventCard from '../../components/EventCard';
 import ChildSelector from '../../components/ChildSelector';
@@ -32,6 +34,8 @@ export default function TodayView() {
   const {
     todaysTasks,
     todaysEvents,
+    pastEvents,
+    pastTasks,
     children,
     stats,
     selectedChildId,
@@ -51,6 +55,8 @@ export default function TodayView() {
   const [showEventModal, setShowEventModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [showPastEvents, setShowPastEvents] = useState(false);
+  const [showPastTasks, setShowPastTasks] = useState(false);
   
   // State for delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -340,56 +346,114 @@ export default function TodayView() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-          {/* Today's Tasks */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-navy-600 flex items-center gap-2">
-                <CheckSquare className="w-6 h-6 text-teal-500" />
-                {t('dashboard.todaysTasks')}
-              </h3>
-              <button 
-                onClick={handleAddTask}
-                className="p-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
-                title={t('tasks.placeholder', 'הוסף משימה חדשה...')}
+          {/* Tasks Column */}
+          <div className="space-y-6">
+            {/* Today's Tasks */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-navy-600 flex items-center gap-2">
+                  <CheckSquare className="w-6 h-6 text-teal-500" />
+                  {t('dashboard.todaysTasks')}
+                </h3>
+                <button 
+                  onClick={handleAddTask}
+                  className="p-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+                  title={t('tasks.placeholder', 'הוסף משימה חדשה...')}
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {todaysTasks.length === 0 ? (
+                  <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+                    <div className="text-6xl mb-3">🎉</div>
+                    <p className="text-silver-600">{t('dashboard.noTasks')}</p>
+                    <p className="text-sm text-silver-500 mt-1">{t('dashboard.enjoyDay')}</p>
+                  </div>
+                ) : (
+                  <AnimatePresence>
+                    {todaysTasks.map((task) => (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        onToggle={toggleTask}
+                        onEdit={handleEditTask}
+                        onDelete={handleDeleteTask}
+                        showChild={selectedChildId === 'all'}
+                      />
+                    ))}
+                  </AnimatePresence>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Past Tasks Section */}
+            {pastTasks.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.55 }}
               >
-                <Plus className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {todaysTasks.length === 0 ? (
-                <div className="bg-white rounded-xl p-8 text-center shadow-sm">
-                  <div className="text-6xl mb-3">🎉</div>
-                  <p className="text-silver-600">{t('dashboard.noTasks')}</p>
-                  <p className="text-sm text-silver-500 mt-1">{t('dashboard.enjoyDay')}</p>
+              <button
+                onClick={() => setShowPastTasks(!showPastTasks)}
+                className="w-full flex items-center justify-between mb-4 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-all"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="text-silver-500">
+                    <CheckSquare className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-silver-700">
+                    {t('dashboard.pastTasks', 'Past Tasks')} ({pastTasks.length})
+                  </h3>
                 </div>
-              ) : (
-                <AnimatePresence>
-                  {todaysTasks.map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      onToggle={toggleTask}
-                      onEdit={handleEditTask}
-                      onDelete={handleDeleteTask}
-                      showChild={selectedChildId === 'all'}
-                    />
-                  ))}
-                </AnimatePresence>
-              )}
-            </div>
-          </motion.div>
+                <ChevronDown
+                  className={cn(
+                    'w-5 h-5 text-silver-500 transition-transform',
+                    showPastTasks && 'rotate-180'
+                  )}
+                />
+              </button>
 
-          {/* Today's Events */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-          >
+              <AnimatePresence>
+                {showPastTasks && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-3"
+                  >
+                    {pastTasks.map((task) => (
+                      <div key={task.id} className="opacity-60 hover:opacity-100 transition-opacity">
+                        <TaskCard
+                          task={task}
+                          onToggle={toggleTask}
+                          onEdit={handleEditTask}
+                          onDelete={handleDeleteTask}
+                          showChild={selectedChildId === 'all'}
+                        />
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+          </div>
+
+          {/* Events Column */}
+          <div className="space-y-6">
+            {/* Today's Events */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+            >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-navy-600 flex items-center gap-2">
                 <Calendar className="w-6 h-6 text-coral-500" />
@@ -426,6 +490,60 @@ export default function TodayView() {
               )}
             </div>
           </motion.div>
+
+          {/* Past Events Section */}
+          {pastEvents.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6"
+            >
+              <button
+                onClick={() => setShowPastEvents(!showPastEvents)}
+                className="w-full flex items-center justify-between mb-4 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-all"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="text-silver-500">
+                    <Calendar className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-silver-700">
+                    {t('dashboard.pastEvents', 'Past Events')} ({pastEvents.length})
+                  </h3>
+                </div>
+                <ChevronDown
+                  className={cn(
+                    'w-5 h-5 text-silver-500 transition-transform',
+                    showPastEvents && 'rotate-180'
+                  )}
+                />
+              </button>
+
+              <AnimatePresence>
+                {showPastEvents && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-3"
+                  >
+                    {pastEvents.map((event) => (
+                      <div key={event.id} className="opacity-60 hover:opacity-100 transition-opacity">
+                        <EventCard
+                          event={event}
+                          onEdit={handleEditEvent}
+                          onDelete={handleDeleteEvent}
+                          showChild={selectedChildId === 'all'}
+                        />
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+          </div>
         </div>
       </div>
 
