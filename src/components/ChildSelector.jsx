@@ -7,7 +7,26 @@ import { cn } from '../lib/utils';
 export default function ChildSelector({ children, selectedId, onChange }) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [familyPhoto, setFamilyPhoto] = useState(null);
   const dropdownRef = useRef(null);
+
+  // Load family profile photo
+  useEffect(() => {
+    const loadFamilyProfile = () => {
+      const savedProfile = localStorage.getItem('family_profile');
+      if (savedProfile) {
+        try {
+          const profile = JSON.parse(savedProfile);
+          if (profile.photoUrl) {
+            setFamilyPhoto(profile.photoUrl);
+          }
+        } catch (error) {
+          console.error('Failed to load family profile:', error);
+        }
+      }
+    };
+    loadFamilyProfile();
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -22,11 +41,11 @@ export default function ChildSelector({ children, selectedId, onChange }) {
   }, []);
 
   const selected = selectedId === 'all' 
-    ? { id: 'all', name: t('tasks.allChildren'), avatar: '👨‍👩‍👧‍👦' }
+    ? { id: 'all', name: t('tasks.allChildren'), avatar: '👨‍👩‍👧‍👦', photoUrl: familyPhoto }
     : children.find((c) => c.id === selectedId);
 
   const options = [
-    { id: 'all', name: t('tasks.allChildren'), avatar: '👨‍👩‍👧‍👦' },
+    { id: 'all', name: t('tasks.allChildren'), avatar: '👨‍👩‍👧‍👦', photoUrl: familyPhoto },
     ...children,
   ];
 

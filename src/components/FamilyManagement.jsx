@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Edit, Trash2, Users, Camera } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, Camera, Home } from 'lucide-react';
 import FamilyMemberModal from '../components/FamilyMemberModal';
+import FamilyProfileModal from '../components/FamilyProfileModal';
 import ConfirmModal from '../components/ConfirmModal';
 import { useData } from '../contexts/DataContext';
 import toast from 'react-hot-toast';
@@ -10,8 +11,25 @@ const FamilyManagement = () => {
   const { t } = useTranslation();
   const { children, loadAllData } = useData();
   const [showMemberModal, setShowMemberModal] = useState(false);
+  const [showFamilyProfileModal, setShowFamilyProfileModal] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [familyProfile, setFamilyProfile] = useState(null);
+
+  // Load family profile on component mount
+  useEffect(() => {
+    const loadFamilyProfile = () => {
+      const savedProfile = localStorage.getItem('family_profile');
+      if (savedProfile) {
+        try {
+          setFamilyProfile(JSON.parse(savedProfile));
+        } catch (error) {
+          console.error('Failed to load family profile:', error);
+        }
+      }
+    };
+    loadFamilyProfile();
+  }, []);
 
   // Mock family member operations (will be replaced with actual API calls)
   const handleAddMember = async (memberData) => {
@@ -160,8 +178,70 @@ const FamilyManagement = () => {
     }
   };
 
+  const handleFamilyProfileSubmit = (profileData) => {
+    // Update state with new profile data
+    setFamilyProfile(profileData);
+    // Close the modal
+    setShowFamilyProfileModal(false);
+  };
+
   return (
     <div className="space-y-6">
+      {/* Family Profile Card */}
+      <div className="bg-gradient-to-r from-teal-50 to-turquoise-50 border-2 border-teal-200 rounded-xl p-6">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-4 flex-1">
+            {/* Family Photo */}
+            <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-md">
+              {familyProfile?.photoUrl ? (
+                <img 
+                  src={familyProfile.photoUrl} 
+                  alt="Family"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Home className="w-10 h-10 text-teal-500" />
+              )}
+            </div>
+            
+            {/* Family Info */}
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-navy-700 mb-1">
+                {familyProfile?.familyName || t('family.familyProfile', 'פרופיל משפחתי')}
+              </h3>
+              <p className="text-sm text-silver-600 mb-3">
+                {t('family.familyProfileDesc', 'פרטים משותפים לכל המשפחה')}
+              </p>
+              {familyProfile && (
+                <div className="grid grid-cols-2 gap-2 text-sm text-navy-600">
+                  {familyProfile.address && (
+                    <div className="flex items-center gap-1">
+                      <span>📍</span>
+                      <span>{familyProfile.address}{familyProfile.city ? `, ${familyProfile.city}` : ''}</span>
+                    </div>
+                  )}
+                  {familyProfile.phone && (
+                    <div className="flex items-center gap-1">
+                      <span>📞</span>
+                      <span>{familyProfile.phone}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Edit Button */}
+          <button
+            onClick={() => setShowFamilyProfileModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-white text-teal-600 border-2 border-teal-500 rounded-lg hover:bg-teal-50 transition-colors"
+          >
+            <Edit className="w-4 h-4" />
+            {t('actions.edit', 'עריכה')}
+          </button>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -178,7 +258,8 @@ const FamilyManagement = () => {
             setEditingMember(null);
             setShowMemberModal(true);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-sage-500 text-white rounded-lg hover:bg-sage-600 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+          style={{ backgroundColor: '#10b981' }}
         >
           <Plus className="w-4 h-4" />
           {t('family.addMember')}
@@ -269,7 +350,8 @@ const FamilyManagement = () => {
                 setEditingMember(null);
                 setShowMemberModal(true);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-sage-500 text-white rounded-lg hover:bg-sage-600 transition-colors mx-auto"
+              className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors mx-auto"
+              style={{ backgroundColor: '#10b981' }}
             >
               <Plus className="w-4 h-4" />
               {t('family.addMember')}
@@ -288,6 +370,13 @@ const FamilyManagement = () => {
         onSubmit={handleMemberSubmit}
         member={editingMember}
         type={editingMember ? 'edit' : 'add'}
+      />
+
+      {/* Family Profile Modal */}
+      <FamilyProfileModal
+        isOpen={showFamilyProfileModal}
+        onClose={() => setShowFamilyProfileModal(false)}
+        onSubmit={handleFamilyProfileSubmit}
       />
 
       {/* Delete Confirmation Modal */}

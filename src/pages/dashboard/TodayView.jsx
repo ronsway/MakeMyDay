@@ -9,12 +9,14 @@ import {
   Menu,
   X,
   Settings,
+  User,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useData } from '../../contexts/DataContext';
+import { useSettings } from '../../hooks/useSettings';
 import TaskCard from '../../components/TaskCard';
 import EventCard from '../../components/EventCard';
 import ChildSelector from '../../components/ChildSelector';
@@ -26,6 +28,7 @@ export default function TodayView() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { formatDate, formatTime } = useSettings();
   const {
     todaysTasks,
     todaysEvents,
@@ -117,17 +120,14 @@ export default function TodayView() {
   // Get current date info
   const today = new Date();
   const locale = t('locale') === 'he' ? 'he-IL' : 'en-US';
-  const dateString = today.toLocaleDateString(locale, {
+  const dateString = formatDate(today, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
 
-  const timeString = today.toLocaleTimeString(locale, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const timeString = formatTime(today);
 
   // Quick stats for cards
   const quickStats = [
@@ -197,6 +197,17 @@ export default function TodayView() {
               />
 
               <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-silver-100 rounded-full flex items-center justify-center overflow-hidden">
+                  {user?.photoUrl ? (
+                    <img 
+                      src={user.photoUrl} 
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-2xl">{user?.avatar || <User className="w-5 h-5 text-silver-600" />}</span>
+                  )}
+                </div>
                 <div className="text-right">
                   <p className="text-sm font-medium text-navy-600">{user?.name}</p>
                   <p className="text-xs text-silver-600">{user?.email}</p>
@@ -242,9 +253,22 @@ export default function TodayView() {
                   onChange={setSelectedChildId}
                 />
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-navy-600">{user?.name}</p>
-                    <p className="text-xs text-silver-600">{user?.email}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-silver-100 rounded-full flex items-center justify-center overflow-hidden">
+                      {user?.photoUrl ? (
+                        <img 
+                          src={user.photoUrl} 
+                          alt={user.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-2xl">{user?.avatar || <User className="w-5 h-5 text-silver-600" />}</span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-navy-600">{user?.name}</p>
+                      <p className="text-xs text-silver-600">{user?.email}</p>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <button

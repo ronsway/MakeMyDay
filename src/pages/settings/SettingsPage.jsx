@@ -28,7 +28,7 @@ export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
-  const [activeSection, setActiveSection] = useState('profile');
+  const [activeSection, setActiveSection] = useState('general');
   const [settings, setSettings] = useState({
     theme: 'light',
     notifications: {
@@ -88,6 +88,12 @@ export default function SettingsPage() {
   }, [i18n.language]);
 
   const settingSections = [
+    {
+      id: 'general',
+      title: t('settings.general', 'הגדרות כלליות'),
+      icon: Settings,
+      description: t('settings.generalDesc', 'שפה, אזור זמן ופורמט תצוגה'),
+    },
     {
       id: 'profile',
       title: t('settings.profile', 'פרופיל אישי'),
@@ -457,6 +463,8 @@ export default function SettingsPage() {
         return <UserProfileEditor />;
       case 'family':
         return <FamilyManagement />;
+      case 'general':
+        return renderGeneralSettings();
       case 'appearance':
         return renderAppearanceSettings();
       case 'notifications':
@@ -534,8 +542,16 @@ export default function SettingsPage() {
             <div className="bg-white rounded-xl shadow-sm border border-silver-200 overflow-hidden">
               <div className="p-6 border-b border-silver-200">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center">
-                    <User className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center overflow-hidden">
+                    {user?.photoUrl ? (
+                      <img 
+                        src={user.photoUrl} 
+                        alt={user.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-2xl">{user?.avatar || <User className="w-6 h-6 text-white" />}</span>
+                    )}
                   </div>
                   <div>
                     <h3 className="font-medium text-navy-700">{user?.name}</h3>
